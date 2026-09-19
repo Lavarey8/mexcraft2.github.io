@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexcraft 2 | Servidor Minecraft Bedrock</title>
+    <!-- Fuentes de Google: FontAwesome y Montserrat -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00e676; /* Verde Neón / Mexican style accent */
+            --secondary: #ff1744; /* Rojo Neón */
+            --bg-dark: #0a0c10;
+            --bg-card: #121620;
+            --bg-hover: #1c2230;
+            --text-light: #f0f3f8;
+            --text-muted: #8a94a6;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* BANNER Y ENCABEZADO */
+        header {
+            background: linear-gradient(rgba(10, 12, 16, 0.8), rgba(10, 12, 16, 0.95)),
+                        url('https://www.minecraft.net/content/dam/minecraftnet/archive/7401f374f218e89052c0f88a68a4263d-aubbeta_header.jpg') center/cover no-repeat;
+            padding: 20px 0 10px 0;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #00e676, #ffffff, #ff1744);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .brand p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* NAVEGACIÓN Y PESTAÑAS */
+        nav {
+            background: rgba(18, 22, 32, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            list-style: none;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-light);
+            background: var(--bg-hover);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+        }
+
+        /* SECCIÓN DEL CONECTAR / HERO INFO */
+        .connect-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .connect-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .info-pill {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-pill label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .info-pill span {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .btn-copy {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
+        }
+
+        /* CONTENIDO DE LAS PESTAÑAS */
+        main {
+            flex: 1;
+            margin-bottom: 40px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ESTILO PARA PESTAÑAS VACÍAS (PLACEHOLDERS) */
+        .empty-section {
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-section i {
+            font-size: 3.5rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .empty-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-section p {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* CARDS / GRID DE INICIO */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 25px;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 230, 118, 0.3);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 25px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .brand h1 { font-size: 2.2rem; }
+            .connect-box { flex-direction: column; align-items: stretch; text-align: center; }
+            .connect-info { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="brand">
+                <h1>Mexcraft 2</h1>
+                <p><i class="fa-solid fa-cube"></i> Servidor de Minecraft Bedrock Edition</p>
+            </div>
+
+            <nav>
+                <ul class="nav-tabs">
+                    <li><button class="tab-btn active" onclick="openTab(event, 'inicio')"><i class="fa-solid fa-house"></i> Inicio</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'tienda')"><i class="fa-solid fa-cart-shopping"></i> Tienda</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'reglas')"><i class="fa-solid fa-book"></i> Reglas</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'noticias')"><i class="fa-solid fa-newspaper"></i> Noticias</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'misiones')"><i class="fa-solid fa-scroll"></i> Misiones</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'whitelist')"><i class="fa-solid fa-id-card"></i> Whitelist</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'faq')"><i class="fa-solid fa-circle-question"></i> FAQ</button></li>
+                    <li><button class="tab-btn" onclick="openTab(event, 'contacto')"><i class="fa-solid fa-envelope"></i> Contacto</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- BARRA RÁPIDA DE CONEXIÓN PARA BEDROCK -->
+        
+
+        <!-- CONTENIDO DE LAS PESTAÑAS -->
+
+        <!-- 1. INICIO -->
+        <div id="inicio" class="tab-content active">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>Servidor Bedrock para todo el mundo</h3>
+                    <p>Conéctate desde tu ps4, ps4, ps5, ps5 slim, ps5 pro, PC con Windows 10 o PC con Windows 11.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>Comunidad</h3>
+                    <p>Únete a nuestra comunidad para jugar todos en un espacio seguro y moderado con castigos a los jugadores que no cumplan las reglas.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Protección Total</h3>
+                    <p>Moderación activa durante el tiempo de juego del servidor.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. TIENDA (Vacía para modificar) -->
+        <div id="tienda" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h2>Tienda Oficial</h2>
+                <p>La tienda abrirá pronto... pero espera a que salga el servidor.</p>
+            </div>
+        </div>
+
+        <!-- 3. REGLAS (Vacía para modificar) -->
+        <div id="reglas" class="tab-content">
+                <div class="empty-section">
+                <i class="fa-solid fa-book"></i>
+                <h2>Reglas del Servidor</h2>
+                <div class="feature-card">
+                    <p>Respeto: No insultos, racismo, odio ni acoso. Trato civilizado entre jugadores y staff.</p>
+                    <p>No hacer grief ni robar: No destruir ni tomar objetos/ construcciones ajenas sin permiso.</p>
+                    <p>Prohibido el uso de trampas, hacks o clientes modificados que den ventaja.</p>
+                    <p>No exploits: Reporta fallos, no los aproveches para beneficio propio.</p>
+                    <p>No spam ni publicidad: Evita mensajes repetitivos y promoción de otros servidores sin permiso.</p>
+                    <p>Sin suplantación: No hacerte pasar por otro jugador o miembro del staff.</p>
+                    <p>Sigue las indicaciones del staff: Sus decisiones son obligatorias en el servidor.</p>                        <p>Canales adecuados: Usa chat general para lo general y los canales específicos para temas concretos.</p>
+                    <p>Edad y seguridad: No compartas datos personales sensibles; cumple con la normativa para menores si aplica.</p>
+                    <p>Consecuencias: Las sanciones pueden ir desde advertencias, mute, kick, ban temporal o permanente según la falta.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-gavel"></i>
+                    <h3>Aplicación de Reglas</h3>
+                    <p>El staff del servidor se reserva el derecho de aplicar las reglas según su criterio y la gravedad de la infracción.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-exclamation-triangle"></i>
+                    <h3>Reportar Infracciones</h3>
+                    <p>Si ves una infracción, por favor reporta con pruebas (capturas, registros) al staff.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. NOTICIAS (Vacía para modificar) -->
+        <div id="noticias" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-newspaper"></i>
+                <h2>Noticias y Actualizaciones</h2>
+                <p>Posdata, el orden de las noticias es de más reciente a más antigua.</p>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h3>Lanzamiento de la web</h3>
+                    <p>¡La nueva web del servidor Mexcraft 2 ya está disponible! ¡No te pierdas las últimas novedades que se publicarán aquí! (19/06/2026 a las 23:16)</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h3>¡Servidor en Preparación!</h3>
+                    <p>V0.1 - Estamos haciendo los últimos preparativos para abrir el servidor por primera vez... ¡No te olvides de marcar el 21/09/2026 en el calendario! (19/09/2026 a las 16:09)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. MISIONES (Vacía para modificar) -->
+        <div id="misiones" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-scroll"></i>
+                <h2>Misiones</h2>
+                <p>Chester se quedó en MX1... ¿O no?... En todo caso, ¡si hay un evento se pondrá aquí!</p>
+            </div>
+        </div>
+
+        <!-- 6. WHITELIST (Vacía para modificar) -->
+        <div id="whitelist" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-id-card"></i>
+                <h2>Registro de Whitelist</h2>
+                <p>Aquí puedes solicitar o verificar tu acceso a la lista blanca (Whitelist) del servidor Mexcraft 2.</p>
+                <div class="tab-btn active">
+                    <p>Jugadores autorizados:</p>
+                    <p>Clinisbut</p>
+                    <p>Rompetren1</p>
+                    <p>ChestBurguer</p>
+                    <p>AAA</p>
+                    <p>¿Deseas solicitarla? escribe a h5tsfwngdh@privaterelay.appleid.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. FAQ (Vacía para modificar) -->
+        <div id="faq" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-circle-question"></i>
+                <h2>Preguntas Frecuentes</h2>
+                <div class="tab-btn active">
+                    <p> P: ¡Minecraft me funciona mal en mi dispositivo!, ¿puedo jugar igualmente?</p>
+                    <p> R: No te preocupes, minecraft bedrock funciona con ciertos errores en PlayStation 4 y PlayStation 5... ¡Pero en PC no hay problemas!</p>
+                </div>
+                <div class="tab-btn active">
+                    <p> P: Si en el servidor hay problemas de conexión, ¿qué debo hacer?</p>
+                    <p> R: Asegúrate de tener una conexión estable a internet y reinicia el juego. Si el problema persiste, contacta con el staff del servidor.</p>
+                </div>
+                <div class="tab-btn active">
+                    <p> P: ¿Si reporto a un jugador incumpliendo las normas... Que sanción hay?</p>
+                    <p> R: Depende: Si es una infracción leve, se aplicará un "warning" y una multa de 500 Mℌ. En cambio, si es una infracción grave, se aplicará la salvaguarda.</p>
+                </div>
+                <div class="tab-btn active">
+                    <p> P: ¿Que es la salvaguarda?</p>
+                    <p> R: La salvaguarda es el peor castigo que puede recibir un jugador en el servidor. consiste en el envenenamiento lento y doloroso de su personaje en una zona diseñada para ello y tras fallecer su personaje, perderá todas sus propiedades, el inventario y su dinero</p>
+                </div>
+                <div class="tab-btn active">
+                    <p> P: ¿Si no tengo nada y me condenan a la salvaguarda me libro del castigo?</p>
+                    <p> R: No, porque serás baneado del servidor por una semana.</p>
+                </div>
+                <div class="tab-btn active">
+                    <p> P: ¿Pasa algo si me condenan a la salvaguarda muchas veces?</p>
+                    <p> R: Suspensión de 1 semana. Aunque puede escalar hasta el baneo permanente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. CONTACTO (Vacía para modificar) -->
+        <div id="contacto" class="tab-content">
+            <div class="empty-section">
+                <i class="fa-solid fa-envelope"></i>
+                <h2>Soporte y Contacto</h2>
+                <p>Correo: h5tsfwngdh@privaterelay.appleid.com</p>
+            </div>
+        </div>
+    
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Mexcraft 2. Este servidor no está afiliado con Mojang ni Microsoft.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Función para cambiar de pestaña
+        function openTab(evt, tabName) {
+            let contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+
+            let buttons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Función para copiar la IP/Puerto
+        function copyIP() {
+            const ip = document.getElementById("server-ip").innerText;
+            const port = document.getElementById("server-port").innerText;
+            const textToCopy = `${ip}:${port}`;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("¡Datos del servidor copiados al portapapeles!\nIP: " + ip + "\nPuerto: " + port);
+            });
+        }
+    </script>
+</body>
+</html>
