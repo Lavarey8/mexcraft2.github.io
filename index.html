@@ -10,7 +10,7 @@
     
     <style>
         :root {
-            --primary: #00e676; /* Verde Neón / Mexican style accent */
+            --primary: #00e676; /* Verde Neón */
             --secondary: #ff1744; /* Rojo Neón */
             --bg-dark: #0a0c10;
             --bg-card: #121620;
@@ -93,9 +93,10 @@
             list-style: none;
         }
 
+        /* BOTONES DE PESTAÑAS (INACTIVAS CON BORDE VERDE) */
         .tab-btn {
-            background: transparent;
-            border: none;
+            background: rgba(0, 230, 118, 0.05);
+            border: 1px solid var(--primary);
             color: var(--text-muted);
             padding: 12px 20px;
             border-radius: 8px;
@@ -110,13 +111,33 @@
 
         .tab-btn:hover {
             color: var(--text-light);
-            background: var(--bg-hover);
+            background: rgba(0, 230, 118, 0.15);
+            box-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
         }
 
         .tab-btn.active {
             background: var(--primary);
             color: #000;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.5);
+        }
+
+        /* EXCEPCIÓN ROJA PARA LA PESTAÑA DE APELACIONES */
+        .tab-btn-danger {
+            color: #ff4d6d !important;
+            border: 1px solid var(--secondary) !important;
+            background: rgba(255, 23, 68, 0.08) !important;
+        }
+
+        .tab-btn-danger:hover {
+            background: rgba(255, 23, 68, 0.2) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(255, 23, 68, 0.4) !important;
+        }
+
+        .tab-btn-danger.active {
+            background: var(--secondary) !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.7) !important;
         }
 
         /* SECCIÓN DEL CONECTAR / HERO INFO */
@@ -137,42 +158,6 @@
             display: flex;
             gap: 20px;
             align-items: center;
-        }
-
-        .info-pill {
-            background: rgba(255,255,255,0.05);
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .info-pill label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            display: block;
-        }
-
-        .info-pill span {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--primary);
-        }
-
-        .btn-copy {
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-copy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
         }
 
         /* CONTENIDO DE LAS PESTAÑAS */
@@ -221,6 +206,38 @@
             margin: 0 auto;
         }
 
+        /* SECCIÓN ROJA INTENSA PARA APELACIONES */
+        .danger-section {
+            background: radial-gradient(circle at top, rgba(255, 23, 68, 0.15) 0%, rgba(18, 22, 32, 0.95) 70%);
+            border: 1px solid rgba(255, 23, 68, 0.4);
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.15);
+        }
+
+        .danger-section i.appeal-icon {
+            color: var(--secondary);
+            font-size: 4rem;
+            text-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+            animation: pulseDanger 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseDanger {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 23, 68, 0.5)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(255, 23, 68, 0.9)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 23, 68, 0.5)); }
+        }
+
+        .danger-section h2 {
+            color: #ff4d6d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .danger-section p.warning-text {
+            color: #ffb4a2;
+            font-weight: 500;
+        }
+
         /* CARDS / GRID DE INICIO */
         .features-grid {
             display: grid;
@@ -234,6 +251,8 @@
             border-radius: var(--radius);
             padding: 25px;
             transition: transform 0.3s;
+            margin-bottom: 15px;
+            text-align: left;
         }
 
         .feature-card:hover {
@@ -254,6 +273,33 @@
         .feature-card p {
             color: var(--text-muted);
             font-size: 0.95rem;
+        }
+
+        .info-card-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        /* ESTILOS PARA EL CONTENEDOR DEL IFRAME CON ENFOQUE ROJO */
+        .iframe-wrapper-danger {
+            width: 100%;
+            max-width: 780px;
+            margin: 25px auto 0 auto;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 2px solid rgba(255, 23, 68, 0.5);
+            background: #ffffff;
+            box-shadow: 0 10px 40px rgba(255, 23, 68, 0.25);
+        }
+
+        .iframe-wrapper-danger iframe {
+            width: 100%;
+            border: none;
+            display: block;
         }
 
         /* FOOTER */
@@ -291,6 +337,7 @@
                     <li><button class="tab-btn" onclick="openTab(event, 'noticias')"><i class="fa-solid fa-newspaper"></i> Noticias</button></li>
                     <li><button class="tab-btn" onclick="openTab(event, 'misiones')"><i class="fa-solid fa-scroll"></i> Misiones</button></li>
                     <li><button class="tab-btn" onclick="openTab(event, 'whitelist')"><i class="fa-solid fa-id-card"></i> Whitelist</button></li>
+                    <li><button class="tab-btn tab-btn-danger" onclick="openTab(event, 'apelaciones')"><i class="fa-solid fa-gavel"></i> Apelaciones</button></li>
                     <li><button class="tab-btn" onclick="openTab(event, 'faq')"><i class="fa-solid fa-circle-question"></i> FAQ</button></li>
                     <li><button class="tab-btn" onclick="openTab(event, 'contacto')"><i class="fa-solid fa-envelope"></i> Contacto</button></li>
                 </ul>
@@ -299,18 +346,20 @@
     </header>
 
     <main class="container">
-        <!-- BARRA RÁPIDA DE CONEXIÓN PARA BEDROCK -->
-        
-
-        <!-- CONTENIDO DE LAS PESTAÑAS -->
 
         <!-- 1. INICIO -->
         <div id="inicio" class="tab-content active">
+            <div class="connect-box">
+                <div class="connect-info">
+                    <h2>¡Ya estamos en funcionamiento!</h2>
+                    <p>¡Conéctate ahora mismo (usando el horario) y únete a nuestra comunidad!</p>
+                </div>
+            </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <i class="fa-solid fa-bolt"></i>
                     <h3>Servidor Bedrock para todo el mundo</h3>
-                    <p>Conéctate desde tu ps4, ps4, ps5, ps5 slim, ps5 pro, PC con Windows 10 o PC con Windows 11.</p>
+                    <p>Conéctate desde tu PS4, PS5, PS5 Slim, PS5 Pro, PC con Windows 10 o PC con Windows 11.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-users"></i>
@@ -335,7 +384,7 @@
                 <div class="feature-card">
                     <i class="fa-solid fa-scroll"></i>
                     <h3>Regiones</h3>
-                    <p>De momento solo hay una región disponible: Mexfurg (con futuras actualizaciones se añadirán más regiones) y para pasar de una región a otra debes pasar por una aduana (si hay algún documento falsificado a proposito se aplicará la salvaguarda).</p>
+                    <p>Hay 2 regiones disponibles: Mexfurg y Tenka (con futuras actualizaciones se añadirán más regiones) y para pasar de una región a otra debes pasar por una aduana (si hay algún documento falsificado a propósito se aplicará la salvaguarda).</p>
                 </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-rocket"></i>
@@ -345,7 +394,7 @@
                 <div class="feature-card">
                     <i class="fa-solid fa-envelope"></i>
                     <h3>Contacto</h3>
-                    <p>Si tienes alguna duda, sugerencia o problema, puedes contactarnos a través del correo: h5tsfwngdh@privaterelay.appleid.com</p>
+                    <p>Si tienes alguna duda o sugerencia, puedes contactarnos a través del correo: h5tsfwngdh@privaterelay.appleid.com (si quieres apelar alguna sanción, ve a la sección de apelaciones).</p>
                 </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-circle-question"></i>
@@ -355,30 +404,58 @@
             </div>
         </div>
 
-        <!-- 2. TIENDA (Vacía para modificar) -->
+        <!-- 2. TIENDA -->
         <div id="tienda" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <h2>Tienda Oficial</h2>
-                <p>La tienda abrirá pronto... pero espera a que salga el servidor.</p>
+                <p>Te presentamos los artículos disponibles en nuestra tienda oficial.</p>
+                <div style="margin-top: 25px;">
+                    <div class="feature-card">
+                        <i class="fa-solid fa-building"></i>
+                        <h3>Fundar una ciudad</h3>
+                        <p>Te damos la opción de fundar una ciudad dentro de una nación (Mexfurg o Tenka) cumpliendo las normas y exigencias de fundar una ciudad. 35000M</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-building"></i>
+                        <h3>Piso en Mexfurg, SkyBuilding</h3>
+                        <p>Cuesta 2000M (1 piso restante).</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-building"></i>
+                        <h3>Piso en Mexfurg, TrainBuilding</h3>
+                        <p>Cuesta 1599M (4 pisos restantes).</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-building"></i>
+                        <h3>Superpiso en Mexfurg, TrainBuilding</h3>
+                        <p>Cuesta 6000M (1 superpiso restante).</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-gem"></i>
+                        <h3>Tienda verde</h3>
+                        <p>¡Este es tu futuro negocio! 1299M (2 tiendas restantes).</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 3. REGLAS (Vacía para modificar) -->
+        <!-- 3. REGLAS -->
         <div id="reglas" class="tab-content">
-                <div class="empty-section">
+            <div class="empty-section">
                 <i class="fa-solid fa-book"></i>
                 <h2>Reglas del Servidor</h2>
                 <div class="feature-card">
-                    <p>Respeto: No insultos, racismo, odio ni acoso. Trato civilizado entre jugadores y staff.</p>
-                    <p>No hacer grief ni robar: No destruir ni tomar objetos/ construcciones ajenas sin permiso.</p>
-                    <p>Prohibido el uso de trampas, hacks o clientes modificados que den ventaja.</p>
-                    <p>No exploits: Reporta fallos, no los aproveches para beneficio propio.</p>
-                    <p>No spam ni publicidad: Evita mensajes repetitivos y promoción de otros servidores sin permiso.</p>
-                    <p>Sin suplantación: No hacerte pasar por otro jugador o miembro del staff.</p>
-                    <p>Sigue las indicaciones del staff: Sus decisiones son obligatorias en el servidor.</p>                        <p>Canales adecuados: Usa chat general para lo general y los canales específicos para temas concretos.</p>
-                    <p>Edad y seguridad: No compartas datos personales sensibles; cumple con la normativa para menores si aplica.</p>
-                    <p>Consecuencias: Las sanciones pueden ir desde advertencias, mute, kick, ban temporal o permanente según la falta.</p>
+                    <p><strong>Respeto:</strong> No insultos, racismo, odio ni acoso. Trato civilizado entre jugadores y staff.</p>
+                    <p><strong>No hacer grief ni robar:</strong> No destruir ni tomar objetos/construcciones ajenas sin permiso.</p>
+                    <p><strong>Fair Play:</strong> Prohibido el uso de trampas, hacks o clientes modificados que den ventaja.</p>
+                    <p><strong>No exploits:</strong> Reporta fallos, no los aproveches para beneficio propio.</p>
+                    <p><strong>No spam ni publicidad:</strong> Evita mensajes repetitivos y promoción de otros servidores sin permiso.</p>
+                    <p><strong>Sin suplantación:</strong> No hacerte pasar por otro jugador o miembro del staff.</p>
+                    <p><strong>Sigue las indicaciones del staff:</strong> Sus decisiones son obligatorias en el servidor.</p>
+                    <p><strong>Canales adecuados:</strong> Usa chat general para lo general y los canales específicos para temas concretos.</p>
+                    <p><strong>Edad y seguridad:</strong> No compartas datos personales sensibles; cumple con la normativa para menores si aplica.</p>
+                    <p><strong>Consecuencias:</strong> Las sanciones pueden ir desde advertencias, kick, ban temporal o permanente según la falta.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-gavel"></i>
@@ -393,12 +470,16 @@
             </div>
         </div>
 
-        <!-- 4. NOTICIAS (Vacía para modificar) -->
+        <!-- 4. NOTICIAS -->
         <div id="noticias" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-newspaper"></i>
                 <h2>Noticias y Actualizaciones</h2>
-                <p>Posdata, el orden de las noticias es de más reciente a más antigua.</p>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h3>Lanzamiento del servidor</h3>
+                    <p>¡Ya estamos abiertos para todos! puedes conectarte ahora mismo y disfrutar de la experiencia (21/06/2026 a las 15:30)</p>
+                </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-bullhorn"></i>
                     <h3>Lanzamiento de la web</h3>
@@ -412,70 +493,104 @@
             </div>
         </div>
 
-        <!-- 5. MISIONES (Vacía para modificar) -->
+        <!-- 5. MISIONES -->
         <div id="misiones" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-scroll"></i>
                 <h2>Misiones</h2>
-                <p>Chester se quedó en MX1... ¿O no?... En todo caso, ¡si hay un evento se pondrá aquí!</p>
+                <div style="margin-top:20px;">
+                    <div class="feature-card">
+                        <i class="fa-solid fa-flag"></i>
+                        <h3>Misión por el inicio</h3>
+                        <p>¡Bienvenido al servidor! Para completar esta misión, conéctate al servidor (hasta el 29/06/2026 a las 23:59) y recibe 5000 Mexes y una casa azul.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-flag"></i>
+                        <h3>Misión de Exploración</h3>
+                        <p>Explora las regiones del servidor y descubre más del mapa. Completa la misión para obtener 2000 Mexes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-flag"></i>
+                        <h3>Misión de Construcción</h3>
+                        <p>Construye una estructura (con licencia activa) y recibe tu recompensa: 2000 Mexes.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 6. WHITELIST (Vacía para modificar) -->
+        <!-- 6. WHITELIST -->
         <div id="whitelist" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-id-card"></i>
                 <h2>Registro de Whitelist</h2>
                 <p>Aquí puedes solicitar o verificar tu acceso a la lista blanca (Whitelist) del servidor Mexcraft 2.</p>
-                <div class="tab-btn active">
-                    <p>Jugadores autorizados:</p>
-                    <p>Clinisbut</p>
-                    <p>Rompetren1</p>
-                    <p>ChestBurguer</p>
-                    <p>AAA</p>
-                    <p>¿Deseas solicitarla? escribe a h5tsfwngdh@privaterelay.appleid.com</p>
+                <div class="info-card-box">
+                    <p><strong>Jugadores autorizados:</strong></p>
+                    <p>• Clinisbut</p>
+                    <p>• Rompetren1</p>
+                    <p>• ChestBurguer</p>
+                    <p>• AAA</p>
+                    <br>
+                    <p>¿Deseas solicitarla? escribe a: <strong>h5tsfwngdh@privaterelay.appleid.com</strong></p>
                 </div>
             </div>
         </div>
 
-        <!-- 7. FAQ (Vacía para modificar) -->
+        <!-- 7. APELACIONES (ESTILIZADO EN ROJO NEÓN CON GOOGLE FORMS) -->
+        <div id="apelaciones" class="tab-content">
+            <div class="empty-section danger-section" style="padding: 40px 20px;">
+                <i class="fa-solid fa-gavel appeal-icon"></i>
+                <h2>Apelación de Sanciones</h2>
+                <p class="warning-text">
+                    Si has sido sancionado por incumplimiento de normas, completa este formulario con honestidad para que el Staff evalúe tu caso.
+                </p>
+
+                <div class="iframe-wrapper-danger">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfieYhePDNcfulfrjBZDK2pGi1j4OWwz7UyWLZTLIt_CZzI_A/viewform?embedded=true" height="1500" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. FAQ -->
         <div id="faq" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-circle-question"></i>
                 <h2>Preguntas Frecuentes</h2>
-                <div class="tab-btn active">
-                    <p> P: ¡Minecraft me funciona mal en mi dispositivo!, ¿puedo jugar igualmente?</p>
-                    <p> R: No te preocupes, minecraft bedrock funciona con ciertos errores en PlayStation 4 y PlayStation 5... ¡Pero en PC no hay problemas!</p>
-                </div>
-                <div class="tab-btn active">
-                    <p> P: Si en el servidor hay problemas de conexión, ¿qué debo hacer?</p>
-                    <p> R: Asegúrate de tener una conexión estable a internet y reinicia el juego. Si el problema persiste, contacta con el staff del servidor.</p>
-                </div>
-                <div class="tab-btn active">
-                    <p> P: ¿Si reporto a un jugador incumpliendo las normas... Que sanción hay?</p>
-                    <p> R: Depende: Si es una infracción leve, se aplicará un "warning" y una multa de 500 Mℌ. En cambio, si es una infracción grave, se aplicará la salvaguarda.</p>
-                </div>
-                <div class="tab-btn active">
-                    <p> P: ¿Que es la salvaguarda?</p>
-                    <p> R: La salvaguarda es el peor castigo que puede recibir un jugador en el servidor. consiste en el envenenamiento lento y doloroso de su personaje en una zona diseñada para ello y tras fallecer su personaje, perderá todas sus propiedades, el inventario y su dinero</p>
-                </div>
-                <div class="tab-btn active">
-                    <p> P: ¿Si no tengo nada y me condenan a la salvaguarda me libro del castigo?</p>
-                    <p> R: No, porque serás baneado del servidor por una semana.</p>
-                </div>
-                <div class="tab-btn active">
-                    <p> P: ¿Pasa algo si me condenan a la salvaguarda muchas veces?</p>
-                    <p> R: Suspensión de 1 semana. Aunque puede escalar hasta el baneo permanente.</p>
+                <div style="margin-top: 20px;">
+                    <div class="feature-card">
+                        <p><strong>P:</strong> ¡Minecraft me funciona mal en mi dispositivo!, ¿puedo jugar igualmente?</p>
+                        <p><strong>R:</strong> No te preocupes, minecraft bedrock funciona con ciertos errores en PlayStation 4 y PlayStation 5... ¡Pero en PC no hay problemas!</p>
+                    </div>
+                    <div class="feature-card">
+                        <p><strong>P:</strong> Si en el servidor hay problemas de conexión, ¿qué debo hacer?</p>
+                        <p><strong>R:</strong> Asegúrate de tener una conexión estable a internet y reinicia el juego. Si el problema persiste, contacta con el staff del servidor.</p>
+                    </div>
+                    <div class="feature-card">
+                        <p><strong>P:</strong> ¿Si reporto a un jugador incumpliendo las normas... Qué sanción hay?</p>
+                        <p><strong>R:</strong> Depende: Si es una infracción leve, se aplicará un "warning" y una multa de 500 Mℌ. En cambio, si es una infracción grave, se aplicará la salvaguarda.</p>
+                    </div>
+                    <div class="feature-card">
+                        <p><strong>P:</strong> ¿Qué es la salvaguarda?</p>
+                        <p><strong>R:</strong> La salvaguarda es el peor castigo que puede recibir un jugador en el servidor. Consiste en el envenenamiento lento y doloroso de su personaje en una zona diseñada para ello y tras fallecer su personaje, perderá todas sus propiedades, el inventario y su dinero.</p>
+                    </div>
+                    <div class="feature-card">
+                        <p><strong>P:</strong> ¿Si no tengo nada y me condenan a la salvaguarda me libro del castigo?</p>
+                        <p><strong>R:</strong> No, porque serás baneado del servidor por una semana.</p>
+                    </div>
+                    <div class="feature-card">
+                        <p><strong>P:</strong> ¿Pasa algo si me condenan a la salvaguarda muchas veces?</p>
+                        <p><strong>R:</strong> Suspensión de 1 semana. Aunque puede escalar hasta el baneo permanente.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 8. CONTACTO (Vacía para modificar) -->
+        <!-- 9. CONTACTO -->
         <div id="contacto" class="tab-content">
             <div class="empty-section">
                 <i class="fa-solid fa-envelope"></i>
                 <h2>Soporte y Contacto</h2>
-                <p>Correo: h5tsfwngdh@privaterelay.appleid.com</p>
+                <p style="margin-top: 15px;">Correo de soporte: <strong>h5tsfwngdh@privaterelay.appleid.com</strong></p>
             </div>
         </div>
     
@@ -502,17 +617,6 @@
 
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
-        }
-
-        // Función para copiar la IP/Puerto
-        function copyIP() {
-            const ip = document.getElementById("server-ip").innerText;
-            const port = document.getElementById("server-port").innerText;
-            const textToCopy = `${ip}:${port}`;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                alert("¡Datos del servidor copiados al portapapeles!\nIP: " + ip + "\nPuerto: " + port);
-            });
         }
     </script>
 </body>
