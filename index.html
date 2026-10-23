@@ -740,6 +740,88 @@
         .mexplus-content.mexplus-ready .mexplus-panel:nth-child(2) { animation-delay: .12s; }
         .mexplus-content.mexplus-ready .mexplus-panel:nth-child(3) { animation-delay: .24s; }
 
+        /* Botón principal para acceder a la página de Mexcraft+ */
+        .mexplus-obtener-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: clamp(28px, 5vw, 54px) auto 12px;
+            padding: 8px 0 18px;
+        }
+        .mexplus-obtener-btn {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            min-width: min(300px, 82vw);
+            padding: 20px 42px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.8);
+            border-radius: 14px;
+            color: #06110a;
+            background: linear-gradient(115deg, #00e676, #baffd6 48%, #00e676);
+            background-size: 220% 100%;
+            font: inherit;
+            font-size: clamp(1.1rem, 2.8vw, 1.55rem);
+            font-weight: 900;
+            letter-spacing: .16em;
+            text-decoration: none;
+            text-transform: uppercase;
+            box-shadow: 0 0 22px rgba(0,230,118,.28), 0 8px 28px rgba(0,0,0,.32), inset 0 1px rgba(255,255,255,.65);
+            animation: mexplusButtonGlow 2.6s ease-in-out infinite, mexplusButtonShine 5s linear infinite;
+            transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+            isolation: isolate;
+        }
+        .mexplus-obtener-btn::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: -80%;
+            left: -35%;
+            width: 24%;
+            height: 260%;
+            background: rgba(255,255,255,.72);
+            transform: rotate(24deg);
+            filter: blur(5px);
+            animation: mexplusButtonSweep 3.4s ease-in-out infinite;
+        }
+        .mexplus-obtener-btn::after {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border: 1px solid rgba(4,30,15,.22);
+            border-radius: 9px;
+            pointer-events: none;
+        }
+        .mexplus-obtener-btn i { font-size: 1.05em; transition: transform .25s ease; }
+        .mexplus-obtener-btn:hover,
+        .mexplus-obtener-btn:focus-visible {
+            color: #020804;
+            filter: brightness(1.12);
+            transform: translateY(-5px) scale(1.035);
+            box-shadow: 0 0 38px rgba(0,230,118,.58), 0 15px 34px rgba(0,0,0,.4);
+            outline: none;
+        }
+        .mexplus-obtener-btn:hover i,
+        .mexplus-obtener-btn:focus-visible i { transform: translateX(5px); }
+        .mexplus-obtener-caption {
+            margin: 12px 0 0;
+            text-align: center;
+            color: rgba(240,243,248,.58);
+            font-size: .8rem;
+        }
+        @keyframes mexplusButtonGlow {
+            0%, 100% { box-shadow: 0 0 18px rgba(0,230,118,.23), 0 8px 28px rgba(0,0,0,.32), inset 0 1px rgba(255,255,255,.65); }
+            50% { box-shadow: 0 0 34px rgba(0,230,118,.48), 0 8px 34px rgba(0,0,0,.36), inset 0 1px rgba(255,255,255,.8); }
+        }
+        @keyframes mexplusButtonShine { to { background-position: -220% 0; } }
+        @keyframes mexplusButtonSweep {
+            0%, 20% { left: -35%; opacity: 0; }
+            35% { opacity: .8; }
+            60%, 100% { left: 125%; opacity: 0; }
+        }
+
         @keyframes mexplusIntroOut { to { opacity: 0; visibility: hidden; } }
         @keyframes mexplusGridDrift {
             from { background-position: 0 0, 0 0; opacity: 0; }
@@ -1012,7 +1094,7 @@
                 <div class="feature-card">
                     <i class="fa-solid fa-bullhorn"></i>
                     <h3>Mexcraft 2 update 1.1</h3>
-                    <p>Hemos actualizado nuestra web añadiendo 2 nuevas secciones, la primera es la de Mexcraft+, porque está de vuelta, y la segunda... pronto lo sabreís. También vamos a añadir de vuelta los golpes... pero eso mejor para la 2.0(23/10/2026 a las 15:20:37)</p>
+                    <p>Hemos actualizado nuestra web añadiendo 2 nuevas secciones, la primera es la de Mexcraft+, porque está de vuelta, y la segunda... pronto lo sabreís. También vamos a añadir de vuelta los golpes... pero eso mejor para la 2.0 (23/10/2026 a las 15:20:37)</p>
                 </div>
                 <div class="feature-card">
                     <i class="fa-solid fa-bullhorn"></i>
@@ -1230,6 +1312,13 @@
                         <p>Pulsa el botón de "comprar" para descubrir el precio de Mexcraft+ (el precio se expresa en Mexes, LavareyGames no cobra a nadie).</p>
                     </div>
                 </div>
+                <div class="mexplus-obtener-wrap">
+                    <a class="mexplus-obtener-btn" href="mx+.html" aria-label="Obtener Mexcraft+">
+                        <span>Obtener</span>
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <p class="mexplus-obtener-caption">Descubre los planes y elige tu experiencia Mexcraft+.</p>
             </div>
         </div>
     
