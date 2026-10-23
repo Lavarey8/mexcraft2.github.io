@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09050d">
+  <title>MX Legacy | Mexcraft 1 Remastered</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #ff56c8;
+      --pink-hot: #ff2da8;
+      --violet: #9d4dff;
+      --orange: #ffb15d;
+      --ink: #08050d;
+      --panel: rgba(21, 12, 28, .86);
+      --text: #fff4fd;
+      --muted: #b9a6bd;
+      --line: rgba(255, 152, 228, .18);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(117, 34, 130, .2), transparent 48%),
+        linear-gradient(180deg, #09050d, #0d0712 56%, #07050b);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.65;
+    }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      pointer-events: none;
+      opacity: .22;
+      background-image: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 4px, transparent 5px);
+    }
+    a { color: inherit; }
+    .container { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
+
+    /* CINEMÁTICA ORIGINAL MX1: contorno -> color -> título */
+    #legacy-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 1000000;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+      background: #030207;
+      animation: introExit .85s 7.25s cubic-bezier(.72,0,.25,1) forwards;
+    }
+    #legacy-intro::before {
+      position: absolute;
+      inset: -30%;
+      z-index: -2;
+      content: "";
+      opacity: 0;
+      background:
+        radial-gradient(ellipse at 50% 48%, rgba(255, 41, 173, .3), transparent 20%),
+        radial-gradient(ellipse at 42% 55%, rgba(104, 49, 255, .25), transparent 37%),
+        radial-gradient(ellipse at 60% 75%, rgba(255, 152, 72, .18), transparent 38%);
+      animation: introAtmosphere 7.8s ease-out forwards;
+    }
+    #legacy-intro::after {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      content: "";
+      pointer-events: none;
+      opacity: .34;
+      background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.035) 6px, transparent 7px);
+    }
+    .legacy-cinematic-stage {
+      position: relative;
+      width: min(100vw, 1250px);
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      perspective: 1000px;
+    }
+    .legacy-letter-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(3px, 2.5vw, 28px);
+      padding: 0 4vw;
+      transform: translateY(-1.2vh);
+    }
+    .legacy-letter {
+      display: inline-block;
+      position: relative;
+      color: transparent;
+      font-family: Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+      font-size: clamp(7rem, 24vw, 19rem);
+      font-weight: 900;
+      line-height: .82;
+      letter-spacing: -.055em;
+      -webkit-text-stroke: 2px rgba(255, 140, 241, .98);
+      text-shadow: 0 0 10px rgba(255, 70, 210, .9), 0 0 35px rgba(174, 48, 255, .5);
+      opacity: 0;
+      filter: blur(8px);
+      clip-path: inset(100% 0 0 0);
+      animation: letterReveal 1.75s cubic-bezier(.15,.8,.2,1) forwards;
+    }
+    .legacy-letter:nth-child(1) { animation-delay: .45s; }
+    .legacy-letter:nth-child(2) { animation-delay: 1.25s; }
+    .legacy-letter:nth-child(3) { animation-delay: 2.05s; }
+    .legacy-letter.is-one { font-size: clamp(6.5rem, 21vw, 17rem); }
+    .legacy-letter::after { content: none; }
+    .legacy-title-lockup {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      width: min(94vw, 720px);
+      padding: 12px;
+      opacity: 0;
+      transform: translate(-50%, -42%) scale(.8);
+      animation: legacyLockupReveal 1.2s 3.85s cubic-bezier(.12,.75,.15,1) forwards;
+    }
+    .legacy-edition-line {
+      display: block;
+      margin-bottom: 7px;
+      color: #ffd4f5;
+      font-size: clamp(.62rem, 1.4vw, .82rem);
+      font-weight: 800;
+      letter-spacing: .48em;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(255, 86, 200, .8);
+    }
+    .legacy-title-lockup h1 {
+      font-family: Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.8rem, 9vw, 6.8rem);
+      font-weight: 900;
+      line-height: .78;
+      letter-spacing: -.025em;
+      text-transform: uppercase;
+      color: #fff;
+      -webkit-text-stroke: .7px #24102b;
+      text-shadow: 4px 5px 0 #411044, 0 0 12px rgba(255,255,255,.45), 0 0 32px rgba(255,56,204,.85);
+    }
+    .legacy-title-lockup h1 span { display: block; }
+    .legacy-title-lockup h1 strong {
+      display: block;
+      margin-top: 7px;
+      color: #ff9edc;
+      font-size: .66em;
+      letter-spacing: .015em;
+      text-shadow: 3px 4px 0 #441045, 0 0 25px rgba(255, 83, 206, .75);
+    }
+    .legacy-flare {
+      position: absolute;
+      z-index: 1;
+      left: -20%;
+      top: 50%;
+      width: 140%;
+      height: 3px;
+      opacity: 0;
+      transform: rotate(-8deg) scaleX(0);
+      background: linear-gradient(90deg, transparent, #a65dff, #fff, #ff63c9, transparent);
+      box-shadow: 0 0 24px 6px rgba(255, 58, 199, .8);
+      animation: legacyFlare .9s 3.55s ease-out forwards;
+    }
+    .legacy-intro-subtitle {
+      position: absolute;
+      top: calc(50% + clamp(125px, 17vw, 190px));
+      left: 0;
+      width: 100%;
+      padding: 0 16px;
+      color: rgba(255, 235, 252, .65);
+      font-size: clamp(.58rem, 1.7vw, .8rem);
+      font-weight: 700;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: subtitleIn .7s 5.25s ease-out forwards;
+    }
+    @keyframes introAtmosphere {
+      0% { opacity: 0; transform: scale(.72) rotate(-8deg); }
+      30% { opacity: .5; }
+      100% { opacity: 1; transform: scale(1.08) rotate(0deg); }
+    }
+    @keyframes letterReveal {
+      0% { opacity: 0; filter: blur(8px); transform: translateY(70px) scale(.7) rotateX(20deg); clip-path: inset(100% 0 0 0); -webkit-text-stroke-color: #fff; }
+      28% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1.03) rotateX(0); clip-path: inset(0 0 0 0); -webkit-text-stroke-color: #ffc2fa; }
+      58% { opacity: 1; filter: drop-shadow(0 0 15px rgba(255,64,216,.7)); -webkit-text-stroke-color: #ff7cda; }
+      100% { opacity: 1; filter: drop-shadow(0 0 23px rgba(255,68,208,.65)); transform: translateY(0) scale(1); clip-path: inset(0 0 0 0); color: #ff9bdd; -webkit-text-stroke-color: #ffe0fb; background: linear-gradient(145deg, #f9d2ff 2%, #ca5dff 30%, #ff55b9 57%, #ffb15d 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 10px rgba(255, 79, 211, .8), 0 0 35px rgba(184, 58, 255, .55); }
+    }
+    @keyframes legacyLockupReveal {
+      0% { opacity: 0; transform: translate(-50%, -38%) scale(.72); filter: blur(14px); }
+      60% { opacity: 1; filter: blur(0); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+    }
+    @keyframes legacyFlare {
+      0% { opacity: 0; transform: rotate(-8deg) scaleX(0); }
+      40% { opacity: 1; transform: rotate(-8deg) scaleX(1); }
+      100% { opacity: 0; transform: rotate(-8deg) scaleX(1.1); }
+    }
+    @keyframes subtitleIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(12px); } }
+    @keyframes introExit {
+      0% { opacity: 1; visibility: visible; transform: scale(1); filter: brightness(1); }
+      55% { opacity: 1; filter: brightness(1.8); }
+      100% { opacity: 0; visibility: hidden; transform: scale(1.035); filter: brightness(2); pointer-events: none; }
+    }
+
+    /* Página MX Legacy: tema diferente, con estructura de portal similar a Mexcraft 2 */
+    .legacy-site { flex: 1; opacity: 0; animation: legacySiteIn 1s 7.55s ease-out forwards; }
+    @keyframes legacySiteIn { to { opacity: 1; } }
+    .legacy-header {
+      position: relative;
+      padding: 42px 0 24px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 94, 211, .35);
+      background:
+        linear-gradient(180deg, rgba(8,4,13,.35), rgba(8,4,13,.97)),
+        radial-gradient(ellipse at 50% -20%, rgba(255,69,201,.36), transparent 58%),
+        linear-gradient(125deg, #190b23, #100716 52%, #28111e);
+    }
+    .legacy-header::after {
+      content: "MX1";
+      position: absolute;
+      right: -15px;
+      bottom: -95px;
+      color: rgba(255, 90, 213, .045);
+      font: 900 clamp(9rem, 25vw, 20rem)/.8 Impact, sans-serif;
+      letter-spacing: -.06em;
+      pointer-events: none;
+    }
+    .legacy-brand { position: relative; z-index: 1; text-align: center; margin-bottom: 27px; }
+    .legacy-brand .eyebrow { color: var(--pink); font-size: .72rem; font-weight: 900; letter-spacing: .42em; text-transform: uppercase; }
+    .legacy-brand h1 {
+      margin: 3px 0 4px;
+      font: 900 clamp(2.7rem, 7vw, 5.1rem)/.9 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+      letter-spacing: .015em;
+      text-transform: uppercase;
+      background: linear-gradient(95deg, #ffb66f 0%, #ff68cb 38%, #c18aff 69%, #fff0f8 100%);
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      filter: drop-shadow(0 0 21px rgba(255, 71, 197, .24));
+    }
+    .legacy-brand p { color: var(--muted); font-size: .94rem; font-weight: 600; }
+    .legacy-nav {
+      position: relative; z-index: 2;
+      padding: 9px;
+      border: 1px solid rgba(255, 115, 220, .17);
+      border-radius: var(--radius);
+      background: rgba(16, 8, 22, .8);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 15px 40px rgba(0,0,0,.25);
+    }
+    .legacy-nav-list { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; list-style: none; }
+    .legacy-tab, .legacy-link {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 17px;
+      border: 1px solid rgba(255, 100, 213, .48);
+      border-radius: 9px;
+      color: #d3bfd5;
+      background: rgba(255, 66, 188, .045);
+      font: 800 .9rem 'Montserrat', sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .22s ease, background .22s ease, transform .22s ease, box-shadow .22s ease;
+    }
+    .legacy-tab:hover, .legacy-link:hover { transform: translateY(-2px); color: white; background: rgba(255, 78, 204, .16); box-shadow: 0 0 17px rgba(255,75,202,.13); }
+    .legacy-tab.active { color: #1a0717; border-color: #ffd4f2; background: linear-gradient(110deg, #ff70d1, #ffb16a); box-shadow: 0 0 20px rgba(255,71,196,.28); }
+    .legacy-link { border-color: rgba(255,177,93,.56); }
+    main { flex: 1; width: min(1180px, calc(100% - 36px)); margin: 34px auto 52px; }
+    .legacy-section { display: none; animation: sectionIn .45s ease both; }
+    .legacy-section.active { display: block; }
+    @keyframes sectionIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .legacy-hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 6vw, 70px) clamp(22px, 5vw, 58px);
+      border: 1px solid rgba(255, 101, 216, .28);
+      border-radius: 22px;
+      background:
+        radial-gradient(ellipse at 80% 0%, rgba(255, 72, 191, .17), transparent 35%),
+        linear-gradient(135deg, rgba(33, 13, 41, .96), rgba(12, 7, 17, .97));
+      box-shadow: 0 25px 65px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.035);
+    }
+    .legacy-hero::before {
+      content: "M X 1";
+      position: absolute; right: -10px; bottom: -55px;
+      color: rgba(255, 95, 215, .055);
+      font: 900 clamp(7rem, 21vw, 17rem)/.8 Impact, sans-serif;
+      letter-spacing: -.05em; pointer-events: none;
+    }
+    .legacy-hero > * { position: relative; z-index: 1; }
+    .legacy-pill { display: inline-flex; align-items: center; gap: 9px; padding: 7px 12px; border: 1px solid rgba(255,120,219,.35); border-radius: 999px; color: #ffc4f0; background: rgba(255,70,195,.07); font-size: .72rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    .legacy-hero h2 { max-width: 850px; margin: 20px 0 16px; font: 900 clamp(2.7rem, 7.6vw, 6.3rem)/.9 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: -.012em; }
+    .legacy-hero h2 span { display: block; color: var(--pink); text-shadow: 0 0 28px rgba(255,67,198,.32); }
+    .legacy-hero p { max-width: 690px; color: #cfbdd4; font-size: 1rem; }
+    .legacy-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .legacy-cta { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 13px 20px; border-radius: 10px; border: 1px solid #ff93dc; color: #180716; background: linear-gradient(110deg, #ff6acb, #ffc078); font-weight: 900; text-decoration: none; box-shadow: 0 0 20px rgba(255,69,195,.2); transition: transform .2s ease, box-shadow .2s ease; }
+    .legacy-cta:hover { transform: translateY(-3px); box-shadow: 0 0 29px rgba(255,69,195,.35); }
+    .legacy-cta.secondary { color: #ffeafa; background: rgba(255,255,255,.045); border-color: rgba(255,255,255,.22); box-shadow: none; }
+    .legacy-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 0 0 22px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+    .legacy-heading p { color: var(--pink); font-size: .72rem; font-weight: 900; letter-spacing: .3em; text-transform: uppercase; }
+    .legacy-heading h2 { font: 900 clamp(2.2rem, 5vw, 4rem)/.95 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+    .legacy-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+    .legacy-card { min-width: 0; padding: 24px; border: 1px solid rgba(255, 99, 214, .16); border-radius: 15px; background: linear-gradient(145deg, rgba(29,14,35,.92), rgba(15,9,20,.94)); box-shadow: 0 12px 30px rgba(0,0,0,.13); transition: transform .24s ease, border-color .24s ease; }
+    .legacy-card:hover { transform: translateY(-5px); border-color: rgba(255,103,215,.48); }
+    .legacy-card i { display: inline-flex; align-items: center; justify-content: center; width: 47px; height: 47px; margin-bottom: 16px; border: 1px solid rgba(255,117,216,.27); border-radius: 13px; color: var(--pink); background: rgba(255,80,200,.08); font-size: 1.25rem; }
+    .legacy-card h3 { margin-bottom: 8px; font-size: 1.04rem; }
+    .legacy-card p { color: var(--muted); font-size: .92rem; }
+    .legacy-notice { margin-top: 20px; padding: 17px 20px; border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; color: #e7d5e9; background: rgba(255,177,93,.06); }
+    .legacy-placeholder { min-height: 240px; display: grid; place-items: center; padding: 28px; border: 1px dashed rgba(255,120,219,.28); border-radius: 18px; text-align: center; background: rgba(255,255,255,.018); }
+    .legacy-placeholder i { color: var(--pink); font-size: 3.2rem; margin-bottom: 12px; text-shadow: 0 0 20px rgba(255,70,202,.42); }
+    .legacy-placeholder h3 { margin-bottom: 5px; font: 900 2rem/1 Impact, 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+    .legacy-placeholder p { max-width: 580px; color: var(--muted); }
+    footer { margin-top: auto; padding: 24px 0; color: #8c748f; text-align: center; font-size: .82rem; border-top: 1px solid rgba(255, 103, 212, .15); background: rgba(10,5,13,.7); }
+    @media (max-width: 760px) {
+      .legacy-header { padding-top: 30px; }
+      .legacy-grid { grid-template-columns: 1fr; }
+      .legacy-tab, .legacy-link { padding: 10px 12px; font-size: .82rem; }
+      .legacy-hero { border-radius: 16px; }
+      .legacy-title-lockup h1 { line-height: .86; }
+      .legacy-intro-subtitle { letter-spacing: .16em; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #legacy-intro { animation-delay: 0s; animation-duration: .01ms; }
+      #legacy-intro::before, .legacy-letter, .legacy-title-lockup, .legacy-flare, .legacy-intro-subtitle { animation-duration: .01ms !important; animation-delay: 0s !important; }
+      .legacy-site { animation-delay: 0s; animation-duration: .01ms; opacity: 1; }
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro inspirada en el lenguaje visual de una cinemática de letras y título, con identidad original MX1 -->
+  <div id="legacy-intro" aria-label="Presentación de Mexcraft 1 Remastered">
+    <div class="legacy-cinematic-stage">
+      <div class="legacy-flare"></div>
+      <div class="legacy-letter-row" aria-hidden="true">
+        <span class="legacy-letter">M</span>
+        <span class="legacy-letter">X</span>
+        <span class="legacy-letter is-one">1</span>
+      </div>
+      <div class="legacy-title-lockup">
+        <span class="legacy-edition-line">The legacy returns</span>
+        <h1><span>Mexcraft 1</span><strong>Remastered</strong></h1>
+      </div>
+      <p class="legacy-intro-subtitle">Una leyenda vuelve a empezar</p>
+    </div>
+  </div>
+
+  <div class="legacy-site">
+    <header class="legacy-header">
+      <div class="container">
+        <div class="legacy-brand">
+          <p class="eyebrow">El archivo original</p>
+          <h1>Mexcraft 1 Remastered</h1>
+          <p>MX Legacy · La memoria del servidor</p>
+        </div>
+        <nav class="legacy-nav" aria-label="Navegación de MX Legacy">
+          <ul class="legacy-nav-list">
+            <li><button class="legacy-tab active" data-section="legacy-home"><i class="fa-solid fa-house"></i> Inicio</button></li>
+            <li><button class="legacy-tab" data-section="legacy-history"><i class="fa-solid fa-clock-rotate-left"></i> Historia</button></li>
+            <li><button class="legacy-tab" data-section="legacy-archive"><i class="fa-solid fa-box-archive"></i> Archivo</button></li>
+            <li><button class="legacy-tab" data-section="legacy-news"><i class="fa-solid fa-newspaper"></i> Noticias</button></li>
+            <li><button class="legacy-tab" data-section="legacy-map"><i class="fa-solid fa-map"></i> Mapa</button></li>
+            <li><a class="legacy-link" href="index.html"><i class="fa-solid fa-arrow-left"></i> Volver a Mexcraft 2</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="legacy-home" class="legacy-section active">
+        <div class="legacy-hero">
+          <span class="legacy-pill"><i class="fa-solid fa-star"></i> MX Legacy</span>
+          <h2>El origen.<span>Reimaginado.</span></h2>
+          <p>Mexcraft 1 Remastered abre su archivo histórico. Un espacio para recuperar contenidos, recuerdos y materiales de la primera etapa de Mexcraft, con una identidad visual completamente renovada.</p>
+          <div class="legacy-hero-actions">
+            <button class="legacy-cta" type="button" data-go="legacy-history">Explorar la historia <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="legacy-cta secondary" type="button" data-go="legacy-archive">Abrir archivo <i class="fa-solid fa-folder-open"></i></button>
+          </div>
+        </div>
+        <div class="legacy-grid" style="margin-top:20px;">
+          <article class="legacy-card"><i class="fa-solid fa-hourglass-start"></i><h3>Los comienzos</h3><p>El espacio donde se recopilarán los primeros recuerdos y etapas de Mexcraft 1.</p></article>
+          <article class="legacy-card"><i class="fa-solid fa-cubes"></i><h3>El mundo original</h3><p>Un archivo para reunir construcciones, lugares y contenidos de la edición clásica.</p></article>
+          <article class="legacy-card"><i class="fa-solid fa-users"></i><h3>La comunidad</h3><p>Una sección para conservar los nombres, momentos e historias que quieras añadir.</p></article>
+        </div>
+      </section>
+
+      <section id="legacy-history" class="legacy-section">
+        <div class="legacy-heading"><div><p>Capítulo 01</p><h2>Historia</h2></div><span class="legacy-pill">Archivo en construcción</span></div>
+        <div class="legacy-placeholder"><div><i class="fa-solid fa-book-open"></i><h3>El comienzo de todo</h3><p>Aquí podrás escribir la historia real de Mexcraft 1: cómo empezó, qué etapas tuvo y qué acontecimientos merecen volver a contarse.</p></div></div>
+      </section>
+
+      <section id="legacy-archive" class="legacy-section">
+        <div class="legacy-heading"><div><p>Capítulo 02</p><h2>Archivo clásico</h2></div><span class="legacy-pill">MX1</span></div>
+        <div class="legacy-grid">
+          <article class="legacy-card"><i class="fa-solid fa-city"></i><h3>Construcciones</h3><p>Zona reservada para capturas, descripciones y ubicaciones de construcciones históricas.</p></article>
+          <article class="legacy-card"><i class="fa-solid fa-scroll"></i><h3>Modos y actividades</h3><p>Espacio para recuperar sistemas, actividades y contenidos de Mexcraft 1.</p></article>
+          <article class="legacy-card"><i class="fa-solid fa-images"></i><h3>Galería</h3><p>Añade aquí imágenes y recuerdos de la edición original cuando estén preparados.</p></article>
+        </div>
+        <div class="legacy-notice"><strong>Nota:</strong> esta sección es una plantilla inicial; el contenido histórico se puede rellenar después.</div>
+      </section>
+
+      <section id="legacy-news" class="legacy-section">
+        <div class="legacy-heading"><div><p>Capítulo 03</p><h2>Noticias</h2></div></div>
+        <div class="legacy-card"><i class="fa-solid fa-wand-magic-sparkles"></i><h3>MX Legacy en restauración</h3><p>La nueva página de Mexcraft 1 Remastered ya tiene su espacio. Las próximas actualizaciones podrán anunciarse aquí.</p></div>
+      </section>
+
+      <section id="legacy-map" class="legacy-section">
+        <div class="legacy-heading"><div><p>Capítulo 04</p><h2>Mapa clásico</h2></div></div>
+        <div class="legacy-placeholder"><div><i class="fa-solid fa-map-location-dot"></i><h3>Coordenadas no disponibles</h3><p>Cuando tengas el mapa o las imágenes que quieras publicar, esta sección está lista para recibirlas.</p></div></div>
+      </section>
+    </main>
+
+    <footer><div class="container"><p>© 2026 Mexcraft · MX Legacy / Mexcraft 1 Remastered. Proyecto comunitario sin afiliación con Mojang ni Microsoft.</p></div></footer>
+  </div>
+
+  <script>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('.legacy-tab'));
+      const sections = Array.from(document.querySelectorAll('.legacy-section'));
+
+      function showSection(id) {
+        if (!sections.some(section => section.id === id)) return;
+        sections.forEach(section => section.classList.toggle('active', section.id === id));
+        tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.section === id));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      tabs.forEach(tab => tab.addEventListener('click', () => showSection(tab.dataset.section)));
+      document.querySelectorAll('[data-go]').forEach(button => {
+        button.addEventListener('click', () => showSection(button.dataset.go));
+      });
+
+      // Respaldo para navegadores que deshabilitan las animaciones: retira la intro tras su duración.
+      const intro = document.getElementById('legacy-intro');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        intro.style.display = 'none';
+      } else {
+        window.setTimeout(() => {
+          intro.style.pointerEvents = 'none';
+        }, 8100);
+      }
+    })();
+  </script>
+</body>
+</html>
