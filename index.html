@@ -740,6 +740,25 @@
         .mexplus-content.mexplus-ready .mexplus-panel:nth-child(2) { animation-delay: .12s; }
         .mexplus-content.mexplus-ready .mexplus-panel:nth-child(3) { animation-delay: .24s; }
 
+
+        /* MX LEGACY: acceso bloqueado hasta cerrar el vídeo de Operación 2210 */
+        #mx-legacy-nav-item[hidden] { display: none !important; }
+        .mxlegacy-nav-btn {
+            color: #ffe7fc;
+            border-color: rgba(255, 105, 220, .85);
+            background: linear-gradient(115deg, rgba(255, 64, 180, .13), rgba(255, 174, 92, .08));
+            text-decoration: none;
+            box-shadow: inset 0 0 16px rgba(255, 81, 203, .08);
+        }
+        .mxlegacy-nav-btn:hover,
+        .mxlegacy-nav-btn:focus-visible {
+            color: #170815;
+            border-color: #fff;
+            background: linear-gradient(115deg, #ff62ce, #ffc17d);
+            box-shadow: 0 0 20px rgba(255, 80, 202, .42);
+            outline: none;
+        }
+
         /* Botón principal para acceder a la página de Mexcraft+ */
         .mexplus-obtener-wrap {
             display: flex;
@@ -955,6 +974,7 @@
                     <li><button class="tab-btn" onclick="openTab(event, 'creditos')"><i class="fa-solid fa-users"></i> Créditos</button></li>
                     <li><button class="tab-btn" onclick="openTab(event, 'mapa')"><i class="fa-solid fa-map"></i> Mapa</button></li>
                     <li><button class="tab-btn mexplus-nav-btn" onclick="openTab(event, 'mexcraft-plus')"><i class="fa-solid fa-plus"></i> Mexcraft+</button></li>
+                    <li id="mx-legacy-nav-item" hidden><a class="tab-btn mxlegacy-nav-btn" href="legacy.html" aria-label="Abrir MX Legacy"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> MX Legacy</a></li>
                     <li><button class="tab-btn" onclick="openOperationModal()"><i class="fa-solid fa-user-secret"></i> Operación 2210</button></li>
                 </ul>
             </nav>
@@ -1360,6 +1380,9 @@
             event.preventDefault();
             if (operationCode.value.trim() === "1013") {
                 closeOperationModal();
+                // La música sólo debe sonar después de cerrar el vídeo, no durante la reproducción.
+                operationBackgroundAudio.pause();
+                operationBackgroundAudio.currentTime = 0;
                 operationVideoOverlay.classList.add("active");
                 document.body.classList.add("operation-playing");
                 operationDrivePlayer.src = operationVideoUrl;
@@ -1374,15 +1397,24 @@
         });
 
         function closeOperationVideo() {
+            if (!operationVideoOverlay.classList.contains("active")) return;
+
             operationVideoOverlay.classList.remove("active");
-            operationDrivePlayer.src = "";
+            operationDrivePlayer.src = ""; // Detiene el vídeo de Drive al cerrar el overlay.
             document.body.classList.remove("operation-playing");
 
-            // Al cerrar el vídeo, inicia la música de fondo. El clic del usuario permite reproducirla.
+            // MX Legacy solo se desbloquea después de cerrar el vídeo de Operación 2210.
+            const mxLegacyNavItem = document.getElementById("mx-legacy-nav-item");
+            if (mxLegacyNavItem) mxLegacyNavItem.hidden = false;
+
+            // Se dispara desde el botón de cerrar o desde Escape (gestos del usuario).
             operationBackgroundAudio.currentTime = 0;
-            operationBackgroundAudio.play().catch(error => {
-                console.warn("No se pudo iniciar trailersong.mp3:", error);
-            });
+            const playback = operationBackgroundAudio.play();
+            if (playback && typeof playback.catch === "function") {
+                playback.catch(error => {
+                    console.warn("No se pudo iniciar ./trailersong.mp3. Comprueba que está junto a index.html:", error);
+                });
+            }
         }
 
         function closeOperationError() {
