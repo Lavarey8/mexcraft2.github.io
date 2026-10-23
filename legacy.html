@@ -426,6 +426,20 @@
     <footer><div class="container"><p>© 2026 Mexcraft · MX Legacy / Mexcraft 1 Remastered. Proyecto comunitario sin afiliación con Mojang ni Microsoft.</p></div></footer>
   </div>
 
+
+  <!-- Reproductor SoundCloud de HOME - Resonance (1 Hour Version), de ThePigGoesQuack. -->
+  <iframe
+    id="soundcloud-player"
+    title="Reproductor de SoundCloud: HOME - Resonance [1 Hour]"
+    allow="autoplay"
+    scrolling="no"
+    frameborder="no"
+    style="position:fixed;width:1px;height:1px;right:0;bottom:0;opacity:.01;pointer-events:none;border:0;"
+    src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fliam-roberts-art%2Fhome-resonance-1-hour-version&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false&color=%23ff56c8">
+  </iframe>
+  <button id="music-toggle" type="button" aria-label="Activar música" style="position:fixed;right:18px;bottom:18px;z-index:1000;background:rgba(18,12,30,.88);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:11px 15px;font:600 13px system-ui;cursor:pointer;backdrop-filter:blur(8px);">♫ Activar música</button>
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+
   <script>
     (() => {
       const tabs = Array.from(document.querySelectorAll('.legacy-tab'));
@@ -443,13 +457,62 @@
         button.addEventListener('click', () => showSection(button.dataset.go));
       });
 
-      // Respaldo para navegadores que deshabilitan las animaciones: retira la intro tras su duración.
+      // La música empieza al terminar la intro (aprox. 8 segundos).
+      // Los navegadores pueden bloquear el autoplay con sonido; el botón permite activarla manualmente.
       const intro = document.getElementById('legacy-intro');
+      const musicButton = document.getElementById('music-toggle');
+      const playerFrame = document.getElementById('soundcloud-player');
+      let soundCloudWidget = null;
+      let isPlaying = false;
+
+      function setMusicButton(playing) {
+        isPlaying = playing;
+        musicButton.textContent = playing ? '♫ Pausar música' : '♫ Activar música';
+        musicButton.setAttribute('aria-label', playing ? 'Pausar música' : 'Activar música');
+      }
+
+      function playMusic() {
+        if (!soundCloudWidget) {
+          setMusicButton(false);
+          return;
+        }
+        soundCloudWidget.play();
+        setMusicButton(true);
+      }
+
+      function pauseMusic() {
+        if (soundCloudWidget) soundCloudWidget.pause();
+        setMusicButton(false);
+      }
+
+      // Inicializa la API y espera a que SoundCloud esté listo.
+      function initSoundCloud() {
+        if (!window.SC || !window.SC.Widget) {
+          setMusicButton(false);
+          return;
+        }
+        soundCloudWidget = window.SC.Widget(playerFrame);
+        soundCloudWidget.bind(window.SC.Widget.Events.READY, () => {
+          // No arrancamos aquí: esperamos a que termine la animación.
+        });
+        soundCloudWidget.bind(window.SC.Widget.Events.PLAY, () => setMusicButton(true));
+        soundCloudWidget.bind(window.SC.Widget.Events.PAUSE, () => setMusicButton(false));
+      }
+      if (window.SC && window.SC.Widget) initSoundCloud();
+      else playerFrame.addEventListener('load', initSoundCloud, { once: true });
+
+      musicButton.addEventListener('click', () => {
+        if (isPlaying) pauseMusic();
+        else playMusic();
+      });
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         intro.style.display = 'none';
+        window.setTimeout(playMusic, 100);
       } else {
         window.setTimeout(() => {
           intro.style.pointerEvents = 'none';
+          playMusic();
         }, 8100);
       }
     })();
