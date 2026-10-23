@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0c10">
+  <title>Mexcraft+ | Acceso exclusivo</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00e676;
+      --secondary: #ff1744;
+      --bg-dark: #0a0c10;
+      --bg-card: #121620;
+      --bg-hover: #1c2230;
+      --text-light: #f0f3f8;
+      --text-muted: #8a94a6;
+      --border-color: rgba(255,255,255,.08);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+    body { min-height: 100vh; background: var(--bg-dark); color: var(--text-light); overflow: hidden; }
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .ambient { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: radial-gradient(ellipse at 50% 12%, rgba(0,230,118,.11), transparent 42%), var(--bg-dark); }
+    .ambient::before { content: ''; position: absolute; inset: -30%; background-image: linear-gradient(rgba(0,230,118,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,230,118,.035) 1px, transparent 1px); background-size: 54px 54px; transform: perspective(650px) rotateX(62deg) scale(1.45); transform-origin: 50% 70%; animation: backgroundDrift 22s linear infinite; }
+    .ambient::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,.62) 100%); }
+    .topline { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 20px clamp(18px,4vw,54px); color: rgba(240,243,248,.56); font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    .topline strong { color: var(--primary); }
+    .stage { min-height: 100svh; position: relative; display: none; align-items: center; justify-content: center; padding: 88px 22px 100px; isolation: isolate; }
+    .stage.active { display: flex; animation: stageAppear .7s cubic-bezier(.2,.7,.2,1) both; }
+    .stage.transition-out { animation: stageLeave .35s ease-in both; }
+    .stage-inner { width: min(100%, 1000px); text-align: center; position: relative; }
+    .eyebrow { color: var(--primary); text-transform: uppercase; letter-spacing: .32em; font-size: .72rem; font-weight: 800; margin-bottom: 16px; }
+    h1, h2, h3 { line-height: 1.12; }
+    .muted { color: var(--text-muted); }
+    .intro-stage { background: radial-gradient(ellipse at center, rgba(0,230,118,.06), transparent 52%); }
+    .intro-logo { position: relative; width: clamp(150px, 27vw, 220px); aspect-ratio: 1; margin: 0 auto 35px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(0,230,118,.48); box-shadow: 0 0 80px rgba(0,230,118,.11), inset 0 0 40px rgba(0,230,118,.08); animation: logoArrive 1.5s cubic-bezier(.16,.8,.25,1) both, logoBreath 3s 1.5s ease-in-out infinite; }
+    .intro-logo::before, .intro-logo::after { content: ''; position: absolute; inset: -16px; border-radius: 50%; border: 1px dashed rgba(255,255,255,.3); animation: rotateRing 12s linear infinite; }
+    .intro-logo::after { inset: -31px; border: 1px solid rgba(0,230,118,.3); border-top-color: transparent; border-bottom-color: transparent; animation-duration: 7s; animation-direction: reverse; }
+    .cube-mark { width: 75px; height: 75px; display: grid; place-items: center; color: white; font-size: 3.7rem; text-shadow: 0 0 18px var(--primary), 0 0 50px rgba(0,230,118,.75); transform: rotate(-8deg); }
+    .intro-title { color: white; font-size: clamp(3.4rem, 11vw, 8rem); letter-spacing: -.07em; font-weight: 900; text-shadow: 0 0 36px rgba(0,230,118,.22); animation: titleReveal 1.25s .3s both; }
+    .intro-title span { color: var(--primary); text-shadow: 0 0 26px rgba(0,230,118,.8); display: inline-block; animation: plusStrike .8s .85s cubic-bezier(.2,.8,.2,1) both; }
+    .intro-subtitle { margin-top: 20px; color: rgba(240,243,248,.6); font-size: clamp(.7rem, 2vw, .95rem); letter-spacing: .32em; text-transform: uppercase; animation: fadeUp .8s 1.1s both; }
+    .intro-line { width: min(300px, 65vw); height: 2px; margin: 38px auto 0; background: rgba(255,255,255,.12); overflow: hidden; border-radius: 5px; }
+    .intro-line span { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, transparent, var(--primary), white); box-shadow: 0 0 16px var(--primary); animation: lineLoad 5s linear both; }
+    .intro-small { margin-top: 12px; color: rgba(240,243,248,.35); letter-spacing: .24em; font-size: .62rem; text-transform: uppercase; }
+    .intro-stage.intro-ready .intro-logo { animation: logoSettle .65s ease both; }
+    .arrow-btn { position: fixed; z-index: 10; bottom: 34px; right: clamp(20px,4vw,55px); width: 62px; height: 62px; border-radius: 50%; border: 1px solid rgba(0,230,118,.7); color: #07100b; background: var(--primary); display: none; place-items: center; font-size: 1.45rem; cursor: pointer; box-shadow: 0 0 26px rgba(0,230,118,.25); transition: transform .2s, box-shadow .2s, opacity .25s; animation: arrowArrive .55s cubic-bezier(.2,.8,.2,1) both; }
+    .arrow-btn.visible { display: grid; }
+    .arrow-btn:hover { transform: translateX(4px) scale(1.06); box-shadow: 0 0 40px rgba(0,230,118,.5); }
+    .arrow-btn:focus-visible, .back-btn:focus-visible, .plan-card:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+    .back-btn { position: fixed; z-index: 10; left: clamp(20px,4vw,55px); bottom: 44px; border: 0; color: rgba(240,243,248,.7); background: transparent; cursor: pointer; display: none; gap: 9px; align-items: center; font-weight: 700; font-size: .86rem; }
+    .back-btn.visible { display: inline-flex; }
+    .back-btn:hover { color: white; }
+    .step-count { color: rgba(240,243,248,.42); font-size: .72rem; letter-spacing: .2em; font-weight: 800; margin-top: 28px; }
+    .step-count span { color: var(--primary); }
+    .advantage-stage { background: radial-gradient(ellipse at 50% 42%, rgba(0,230,118,.045), transparent 55%); }
+    .advantage-card { width: min(100%, 780px); margin: auto; padding: clamp(28px,5vw,60px); border: 1px solid rgba(0,230,118,.19); border-radius: 20px; background: linear-gradient(145deg, rgba(18,22,32,.94), rgba(8,11,16,.96)); box-shadow: 0 28px 85px rgba(0,0,0,.36), inset 0 1px rgba(255,255,255,.035); text-align: center; position: relative; overflow: hidden; }
+    .advantage-card::before { content: ''; position: absolute; top: 0; left: 12%; width: 76%; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
+    .advantage-icon { width: 106px; height: 106px; margin: 0 auto 30px; border: 1px solid rgba(0,230,118,.28); border-radius: 26px; display: grid; place-items: center; color: var(--primary); font-size: 2.8rem; background: rgba(0,230,118,.045); box-shadow: 0 0 35px rgba(0,230,118,.06); animation: iconHover 3s ease-in-out infinite; }
+    .advantage-title { font-weight: 900; font-size: clamp(2.1rem, 6vw, 4.2rem); letter-spacing: -.04em; margin-bottom: 22px; }
+    .advantage-description { color: #b2bac8; font-size: clamp(1rem, 2.4vw, 1.18rem); line-height: 1.9; max-width: 600px; margin: auto; }
+    .advantage-detail { display: inline-flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .detail-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(0,230,118,.07); border: 1px solid rgba(0,230,118,.16); border-radius: 8px; color: #d8f9e5; font-weight: 700; font-size: .8rem; }
+    .detail-chip i { color: var(--primary); }
+    .final-stage { background: radial-gradient(ellipse at 50% 43%, rgba(0,230,118,.13), transparent 50%); }
+    .final-mark { color: white; font-size: clamp(3.5rem, 11vw, 8rem); font-weight: 900; letter-spacing: -.07em; text-shadow: 0 0 35px rgba(0,230,118,.32); animation: finalLogo 1s cubic-bezier(.15,.8,.2,1) both; }
+    .final-mark span { color: var(--primary); }
+    .final-subtitle { margin-top: 22px; color: rgba(240,243,248,.68); text-transform: uppercase; letter-spacing: .28em; font-weight: 700; animation: fadeUp .8s .4s both; }
+    .final-bar { height: 2px; width: min(330px,70vw); margin: 35px auto 0; background: rgba(255,255,255,.13); overflow: hidden; }
+    .final-bar span { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg, var(--primary), white); box-shadow: 0 0 18px var(--primary); animation: lineLoad 5s linear both; }
+    .plans-stage { height: 100svh; min-height: 100svh; padding-top: 100px; overflow-y: auto; overscroll-behavior: contain; }
+    .plans-heading { font-weight: 900; font-size: clamp(2.2rem,6vw,4.3rem); letter-spacing: -.055em; margin-bottom: 14px; }
+    .plans-heading span { color: var(--primary); }
+    .plans-intro { color: var(--text-muted); margin: 0 auto 34px; max-width: 650px; line-height: 1.8; }
+    .plans-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 22px; max-width: 850px; margin: 0 auto; text-align: left; }
+    .plan-card { position: relative; padding: 30px; border: 1px solid rgba(255,255,255,.13); background: linear-gradient(145deg, rgba(18,22,32,.97), rgba(10,13,19,.98)); border-radius: 17px; text-align: left; color: var(--text-light); cursor: pointer; transition: transform .25s, border-color .25s, box-shadow .25s; overflow: hidden; }
+    .plan-card:hover { transform: translateY(-7px); border-color: var(--primary); box-shadow: 0 16px 50px rgba(0,230,118,.11); }
+    .plan-card.pro { border-color: rgba(0,230,118,.6); box-shadow: inset 0 0 30px rgba(0,230,118,.035); }
+    .plan-card.pro::after { content: 'EXPERIENCIA COMPLETA'; position: absolute; top: 18px; right: -37px; transform: rotate(35deg); padding: 6px 42px; font-size: .55rem; font-weight: 900; letter-spacing: .13em; color: #07100b; background: var(--primary); }
+    .plan-label { color: var(--primary); text-transform: uppercase; letter-spacing: .2em; font-size: .68rem; font-weight: 900; margin-bottom: 14px; }
+    .plan-name { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+    .plan-price { display: flex; align-items: baseline; gap: 7px; margin: 19px 0 23px; }
+    .plan-price strong { font-size: 2.7rem; font-weight: 900; letter-spacing: -.05em; }
+    .plan-price span { color: var(--text-muted); font-size: .8rem; }
+    .plan-features { list-style: none; display: grid; gap: 13px; margin-bottom: 27px; color: #c4ccd7; font-size: .87rem; }
+    .plan-features li { display: flex; gap: 10px; align-items: flex-start; }
+    .plan-features i { color: var(--primary); margin-top: 3px; }
+    .plan-cta { display: block; width: 100%; border: 1px solid var(--primary); border-radius: 8px; padding: 13px 15px; background: var(--primary); color: #06110b; font-size: .9rem; font-weight: 900; cursor: pointer; transition: filter .2s, transform .2s; }
+    .plan-cta:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    .nickname-wrap { width: min(100%, 850px); margin: 22px auto 0; text-align: left; }
+    .nickname-wrap label { display: block; font-size: .76rem; font-weight: 800; color: #c2cad6; margin-bottom: 8px; }
+    .nickname-wrap input { width: 100%; border: 1px solid #303949; background: #080b10; border-radius: 8px; padding: 13px 14px; outline: none; color: white; }
+    .nickname-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 12px rgba(0,230,118,.12); }
+    .fineprint { color: rgba(240,243,248,.4); font-size: .7rem; line-height: 1.7; margin: 18px auto 0; max-width: 700px; }
+    .purchase-overlay { position: fixed; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; padding: 25px; background: rgba(3,5,8,.97); isolation: isolate; overflow-y: auto; }
+    .purchase-overlay.active { display: flex; animation: purchaseOpen .6s ease both; }
+    .purchase-overlay::before { content: ''; position: absolute; inset: -20%; z-index: -1; background: repeating-linear-gradient(0deg, transparent 0 54px, rgba(0,230,118,.04) 55px, transparent 56px 110px), repeating-linear-gradient(90deg, transparent 0 54px, rgba(0,230,118,.04) 55px, transparent 56px 110px); transform: perspective(700px) rotateX(55deg) scale(1.4); }
+    .purchase-message { width: min(100%, 1000px); text-align: center; }
+    .success-symbol { color: var(--primary); font-size: clamp(3rem,7vw,5rem); margin-bottom: 30px; filter: drop-shadow(0 0 24px rgba(0,230,118,.55)); }
+    .purchase-message h2 { color: white; font-size: clamp(2.6rem, 8vw, 6.8rem); line-height: 1.02; letter-spacing: -.06em; font-weight: 900; text-wrap: balance; text-shadow: 0 0 35px rgba(0,230,118,.14); }
+    .purchase-message h2 span { color: var(--primary); }
+    .purchase-status { margin: 28px auto 0; max-width: 650px; min-height: 28px; color: #b5c0cc; line-height: 1.8; font-size: .9rem; }
+    .purchase-plan { color: var(--primary); font-weight: 900; margin-top: 12px; letter-spacing: .12em; }
+    .return-btn { margin-top: 32px; border: 1px solid rgba(255,255,255,.25); border-radius: 8px; background: rgba(255,255,255,.05); color: white; padding: 12px 20px; cursor: pointer; font-weight: 800; }
+    .return-btn:hover { border-color: var(--primary); }
+    .footer-note { position: fixed; z-index: 5; bottom: 15px; left: 0; right: 0; text-align: center; color: rgba(240,243,248,.25); font-size: .62rem; letter-spacing: .08em; pointer-events: none; }
+    .hidden { display: none !important; }
+    @keyframes backgroundDrift { to { background-position: 0 220px, 220px 0; } }
+    @keyframes logoArrive { 0% { opacity: 0; transform: scale(.15) rotate(-90deg); filter: blur(20px); } 55% { opacity: 1; transform: scale(1.08) rotate(8deg); filter: blur(0); } 75% { transform: scale(.97) rotate(-3deg); } 100% { transform: scale(1) rotate(0); } }
+    @keyframes logoBreath { 0%,100% { box-shadow: 0 0 45px rgba(0,230,118,.08), inset 0 0 30px rgba(0,230,118,.04); } 50% { box-shadow: 0 0 90px rgba(0,230,118,.2), inset 0 0 52px rgba(0,230,118,.12); } }
+    @keyframes rotateRing { to { transform: rotate(360deg); } }
+    @keyframes titleReveal { from { opacity: 0; transform: translateY(32px) scale(.92); filter: blur(12px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+    @keyframes plusStrike { from { opacity: 0; transform: scale(2.8) rotate(45deg); filter: blur(10px); } to { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lineLoad { to { transform: scaleX(1); } }
+    @keyframes logoSettle { to { transform: scale(.96); } }
+    @keyframes arrowArrive { from { opacity: 0; transform: translateX(-22px) scale(.7); } to { opacity: 1; transform: translateX(0) scale(1); } }
+    @keyframes stageAppear { from { opacity: 0; transform: translateX(45px) scale(.985); filter: blur(5px); } to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } }
+    @keyframes stageLeave { to { opacity: 0; transform: translateX(-28px) scale(.99); filter: blur(3px); } }
+    @keyframes iconHover { 0%,100% { transform: translateY(0); box-shadow: 0 0 26px rgba(0,230,118,.05); } 50% { transform: translateY(-6px); box-shadow: 0 0 38px rgba(0,230,118,.14); } }
+    @keyframes finalLogo { from { opacity: 0; transform: scale(.72); filter: blur(16px); letter-spacing: .02em; } to { opacity: 1; transform: scale(1); filter: blur(0); letter-spacing: -.07em; } }
+    @keyframes purchaseOpen { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 700px) {
+      body { overflow-y: auto; }
+      .topline { padding: 15px 17px; font-size: .58rem; letter-spacing: .1em; }
+      .stage { padding: 74px 15px 100px; min-height: 100svh; }
+      .advantage-card { padding: 28px 20px; }
+      .advantage-description { line-height: 1.7; }
+      .advantage-icon { width: 80px; height: 80px; font-size: 2.1rem; margin-bottom: 24px; }
+      .plans-grid { grid-template-columns: 1fr; gap: 16px; }
+      .plan-card { padding: 25px; }
+      .arrow-btn { width: 54px; height: 54px; bottom: 24px; right: 20px; }
+      .back-btn { bottom: 42px; left: 20px; }
+      .footer-note { position: static; padding: 0 10px 12px; }
+      .plans-stage { padding-bottom: 35px; height: 100svh; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="topline"><span><strong>MEXCRAFT 2</strong> / EXPERIENCIA EXCLUSIVA</span><span id="topState">PRESENTACIÓN</span></div>
+
+  <!-- CINEMÁTICA DE ENTRADA -->
+  <section id="introStage" class="stage intro-stage active" aria-label="Presentación de Mexcraft Plus">
+    <div class="stage-inner">
+      <div class="intro-logo" aria-hidden="true"><div class="cube-mark"><i class="fa-solid fa-plus"></i></div></div>
+      <p class="eyebrow">Una nueva forma de vivir el servidor</p>
+      <h1 class="intro-title">MEXCRAFT<span>+</span></h1>
+      <p class="intro-subtitle">No juegues solamente. Forma parte.</p>
+      <div class="intro-line"><span></span></div>
+      <p class="intro-small" id="introStatus">Preparando experiencia...</p>
+    </div>
+  </section>
+
+  <!-- VENTAJA 1: sección independiente -->
+  <section id="advantage0" class="stage advantage-stage" aria-label="Ventaja 1: Acceso anticipado" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 01</p>
+      <div class="advantage-icon"><i class="fa-solid fa-bolt"></i></div>
+      <h2 class="advantage-title">Acceso anticipado</h2>
+      <p class="advantage-description">Descubre antes que nadie las novedades que llegan a Mexcraft 2. Prueba contenido nuevo y conoce las próximas funciones antes de su lanzamiento general.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>Actualizaciones antes que nadie</span><span class="detail-chip"><i class="fa-solid fa-check"></i>Novedades exclusivas</span></div>
+      <p class="step-count">VENTAJA <span>01</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- VENTAJA 2: sección independiente -->
+  <section id="advantage1" class="stage advantage-stage" aria-label="Ventaja 2: Recompensas especiales" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 02</p>
+      <div class="advantage-icon"><i class="fa-solid fa-gem"></i></div>
+      <h2 class="advantage-title">Recompensas especiales</h2>
+      <p class="advantage-description">Recibe un paquete de recompensas mensual pensado para miembros de Mexcraft+. Los premios previstos incluyen lingotes de netherite, diamantes y Mexes.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>64 lingotes de netherite</span><span class="detail-chip"><i class="fa-solid fa-check"></i>64 diamantes</span><span class="detail-chip"><i class="fa-solid fa-check"></i>500 Mexes al mes</span></div>
+      <p class="step-count">VENTAJA <span>02</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- VENTAJA 3: sección independiente -->
+  <section id="advantage2" class="stage advantage-stage" aria-label="Ventaja 3: Eventos exclusivos" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 03</p>
+      <div class="advantage-icon"><i class="fa-solid fa-calendar-check"></i></div>
+      <h2 class="advantage-title">Eventos exclusivos</h2>
+      <p class="advantage-description">Participa en eventos preparados para los miembros de Mexcraft+. Una forma distinta de jugar y disfrutar del servidor junto a otros suscriptores.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>Eventos para miembros</span><span class="detail-chip"><i class="fa-solid fa-check"></i>Actividades especiales</span></div>
+      <p class="step-count">VENTAJA <span>03</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- VENTAJA 4: sección independiente -->
+  <section id="advantage3" class="stage advantage-stage" aria-label="Ventaja 4: Soporte prioritario" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 04</p>
+      <div class="advantage-icon"><i class="fa-solid fa-headset"></i></div>
+      <h2 class="advantage-title">Soporte prioritario</h2>
+      <p class="advantage-description">Tus consultas reciben atención prioritaria y más personalizada por parte del equipo de soporte del servidor.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>Atención prioritaria</span><span class="detail-chip"><i class="fa-solid fa-check"></i>Asistencia personalizada</span></div>
+      <p class="step-count">VENTAJA <span>04</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- VENTAJA 5: sección independiente -->
+  <section id="advantage4" class="stage advantage-stage" aria-label="Ventaja 5: Propiedades exclusivas" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 05</p>
+      <div class="advantage-icon"><i class="fa-solid fa-house"></i></div>
+      <h2 class="advantage-title">Propiedades exclusivas</h2>
+      <p class="advantage-description">Accede a viviendas y propiedades especiales que no están disponibles para los jugadores sin suscripción.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>Viviendas especiales</span><span class="detail-chip"><i class="fa-solid fa-check"></i>Acceso exclusivo</span></div>
+      <p class="step-count">VENTAJA <span>05</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- VENTAJA 6: sección independiente -->
+  <section id="advantage5" class="stage advantage-stage" aria-label="Ventaja 6: Personalización avanzada" aria-live="polite">
+    <div class="stage-inner"><div class="advantage-card">
+      <p class="eyebrow">MEXCRAFT+ / VENTAJA 06</p>
+      <div class="advantage-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <h2 class="advantage-title">Personalización avanzada</h2>
+      <p class="advantage-description">Personaliza nombres de objetos y disfruta de patrones exclusivos de armadura gratis, siguiendo las opciones que estén disponibles ese mes.</p>
+      <div class="advantage-detail"><span class="detail-chip"><i class="fa-solid fa-check"></i>Nombres de objetos</span><span class="detail-chip"><i class="fa-solid fa-check"></i>Patrones de armadura</span></div>
+      <p class="step-count">VENTAJA <span>06</span> / 06</p>
+    </div></div>
+  </section>
+
+  <!-- CINEMÁTICA FINAL DE SELECCIÓN -->
+  <section id="finalStage" class="stage final-stage" aria-label="Preparando los planes de Mexcraft Plus">
+    <div class="stage-inner">
+      <p class="eyebrow">Tu experiencia. Tu elección.</p>
+      <h2 class="final-mark">MEXCRAFT<span>+</span></h2>
+      <p class="final-subtitle">Elige tu nivel de acceso</p>
+      <div class="final-bar"><span></span></div>
+      <p class="intro-small">Configurando planes disponibles...</p>
+    </div>
+  </section>
+
+  <section id="plansStage" class="stage plans-stage" aria-label="Planes y precios de Mexcraft Plus">
+    <div class="stage-inner">
+      <p class="eyebrow">Suscripción mensual en Mexes</p>
+      <h2 class="plans-heading">Elige tu <span>Mexcraft+</span></h2>
+      <p class="plans-intro">Dos formas de disfrutar de ventajas exclusivas. Las solicitudes quedarán pendientes de confirmación por parte del equipo del servidor.</p>
+      <div class="plans-grid">
+        <button type="button" class="plan-card" data-plan="basic" aria-label="Solicitar Mexcraft Plus Basic por 510 Mexes al mes">
+          <p class="plan-label">La experiencia esencial</p>
+          <h3 class="plan-name">Mexcraft+ Basic</h3>
+          <p class="muted">La mitad de las ventajas de MX+.</p>
+          <div class="plan-price"><strong>510</strong><span>Mexes / mes</span></div>
+          <ul class="plan-features">
+            <li><i class="fa-solid fa-check"></i><span>Acceso anticipado a novedades</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Recompensas especiales mensuales</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Acceso a eventos exclusivos</span></li>
+            <li><i class="fa-solid fa-minus"></i><span>Sin soporte prioritario, propiedades ni personalización avanzada</span></li>
+          </ul>
+          <span class="plan-cta">Solicitar Basic <i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+        <button type="button" class="plan-card pro" data-plan="pro" aria-label="Solicitar Mexcraft Plus Pro por 750 Mexes al mes">
+          <p class="plan-label">Todo desbloqueado</p>
+          <h3 class="plan-name">Mexcraft+ Pro</h3>
+          <p class="muted">Todas las ventajas de MX+.</p>
+          <div class="plan-price"><strong>750</strong><span>Mexes / mes</span></div>
+          <ul class="plan-features">
+            <li><i class="fa-solid fa-check"></i><span>Acceso anticipado a novedades</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Recompensas especiales mensuales</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Eventos exclusivos</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Soporte prioritario</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Propiedades exclusivas</span></li>
+            <li><i class="fa-solid fa-check"></i><span>Personalización avanzada</span></li>
+          </ul>
+          <span class="plan-cta">Solicitar Pro <i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+      </div>
+      <div class="nickname-wrap">
+        <label for="minecraftName">Gamertag de Minecraft (opcional, para identificar tu solicitud)</label>
+        <input id="minecraftName" type="text" maxlength="40" autocomplete="off" placeholder="Tu nombre en el servidor">
+      </div>
+      <p class="fineprint">Los Mexes son la moneda interna del servidor. Esta página no procesa pagos ni descuenta Mexes automáticamente: el equipo revisará cada solicitud y gestionará la confirmación.</p>
+    </div>
+  </section>
+
+  <button id="backButton" class="back-btn" type="button"><i class="fa-solid fa-arrow-left"></i><span>Anterior</span></button>
+  <button id="nextButton" class="arrow-btn" type="button" aria-label="Continuar" title="Continuar"><i class="fa-solid fa-arrow-right"></i></button>
+  <div class="footer-note">MEXCRAFT+ · UNA EXPERIENCIA DE MEXCRAFT 2</div>
+
+  <div id="purchaseOverlay" class="purchase-overlay" role="status" aria-live="polite">
+    <div class="purchase-message">
+      <i class="fa-solid fa-circle-check success-symbol" aria-hidden="true"></i>
+      <p class="eyebrow">Solicitud de suscripción</p>
+      <h2>Compra pendiente,<br>cuando esté confirmada <span>te avisaremos</span></h2>
+      <p id="purchasePlan" class="purchase-plan"></p>
+      <p id="purchaseStatus" class="purchase-status">Registrando el intento de compra...</p>
+      <button id="returnButton" type="button" class="return-btn">Volver a los planes</button>
+    </div>
+  </div>
+
+  <script>
+    // CONFIGURACIÓN DE AVISOS: se usa la dirección de contacto ya publicada en la web de Mexcraft 2.
+    // FormSubmit requiere confirmar el primer mensaje recibido antes de activar los avisos.
+    const NOTIFICATION_EMAIL = 'h5tsfwngdh@privaterelay.appleid.com';
+    const NOTIFICATION_ENDPOINT = 'https://formsubmit.co/ajax/' + NOTIFICATION_EMAIL;
+
+    const advantages = [
+      {
+        icon: 'fa-bolt', title: 'Acceso anticipado',
+        description: 'Descubre antes que nadie las novedades que llegan a Mexcraft 2. Prueba contenido nuevo y conoce las próximas funciones antes de su lanzamiento general.',
+        details: ['Actualizaciones antes que nadie', 'Novedades exclusivas']
+      },
+      {
+        icon: 'fa-gem', title: 'Recompensas especiales',
+        description: 'Recibe un paquete de recompensas mensual pensado para miembros de Mexcraft+. Los premios que se anuncian actualmente incluyen lingotes de netherite, diamantes y Mexes.',
+        details: ['64 lingotes de netherite', '64 diamantes', '500 Mexes al mes']
+      },
+      {
+        icon: 'fa-calendar-check', title: 'Eventos exclusivos',
+        description: 'Participa en eventos preparados para los miembros de Mexcraft+. Una forma distinta de jugar y disfrutar del servidor junto a otros suscriptores.',
+        details: ['Eventos para miembros', 'Actividades especiales']
+      },
+      {
+        icon: 'fa-headset', title: 'Soporte prioritario',
+        description: 'Tus consultas reciben atención prioritaria y más personalizada por parte del equipo de soporte del servidor.',
+        details: ['Atención prioritaria', 'Asistencia personalizada']
+      },
+      {
+        icon: 'fa-house', title: 'Propiedades exclusivas',
+        description: 'Accede a viviendas y propiedades especiales que no están disponibles para los jugadores sin suscripción.',
+        details: ['Viviendas especiales', 'Acceso exclusivo']
+      },
+      {
+        icon: 'fa-wand-magic-sparkles', title: 'Personalización avanzada',
+        description: 'Personaliza nombres de objetos y disfruta de patrones exclusivos de armadura gratis, siguiendo las opciones que estén disponibles ese mes.',
+        details: ['Nombres de objetos', 'Patrones de armadura']
+      }
+    ];
+
+    const introStage = document.getElementById('introStage');
+    const advantageStages = Array.from({ length: 6 }, (_, index) => document.getElementById('advantage' + index));
+    const finalStage = document.getElementById('finalStage');
+    const plansStage = document.getElementById('plansStage');
+    const nextButton = document.getElementById('nextButton');
+    const backButton = document.getElementById('backButton');
+    const topState = document.getElementById('topState');
+    const purchaseOverlay = document.getElementById('purchaseOverlay');
+    let currentStep = -1; // -1 = entrada, 0..5 = ventajas, 6 = cinemática final, 7 = planes
+    let introComplete = false;
+    let introTimer = null;
+    let finishTimer = null;
+    let moveLocked = false;
+    let selectedPlan = null;
+
+    function setActiveStage(stage) {
+      [introStage, ...advantageStages, finalStage, plansStage].forEach(el => {
+        el.classList.remove('active', 'transition-out');
+      });
+      stage.classList.add('active');
+    }
+
+    function updateControls() {
+      nextButton.classList.remove('visible');
+      backButton.classList.remove('visible');
+      if (currentStep === -1 && introComplete) {
+        nextButton.classList.add('visible');
+      } else if (currentStep >= 0 && currentStep <= 5) {
+        nextButton.classList.add('visible');
+      }
+      if (currentStep >= -1 && currentStep <= 5) {
+        nextButton.setAttribute('aria-label', currentStep === 5 ? 'Ver planes' : 'Continuar');
+        nextButton.title = currentStep === 5 ? 'Ver planes' : 'Continuar';
+        nextButton.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
+      }
+      if (currentStep >= 0 && currentStep <= 5) backButton.classList.add('visible');
+      if (currentStep === -1) topState.textContent = 'PRESENTACIÓN';
+      else if (currentStep >= 0 && currentStep <= 5) topState.textContent = 'VENTAJAS · ' + (currentStep + 1) + ' / 6';
+      else if (currentStep === 6) topState.textContent = 'PREPARANDO PLANES';
+      else topState.textContent = 'ELIGE TU SUSCRIPCIÓN';
+    }
+
+    function moveToStep(nextStep) {
+      if (moveLocked || nextStep < -1 || nextStep > 7) return;
+      if (nextStep === 7) {
+        currentStep = 7;
+        setActiveStage(plansStage);
+        updateControls();
+        return;
+      }
+      if (nextStep === 6) {
+        currentStep = 6;
+        setActiveStage(finalStage);
+        updateControls();
+        clearTimeout(finishTimer);
+        const bar = finalStage.querySelector('.final-bar span');
+        bar.style.animation = 'none';
+        void bar.offsetWidth;
+        bar.style.animation = '';
+        finishTimer = window.setTimeout(() => {
+          if (currentStep !== 6) return;
+          currentStep = 7;
+          setActiveStage(plansStage);
+          updateControls();
+        }, 5000);
+        return;
+      }
+      currentStep = nextStep;
+      if (nextStep === -1) {
+        introComplete = false;
+        introStage.classList.remove('intro-ready');
+        setActiveStage(introStage);
+        const line = introStage.querySelector('.intro-line span');
+        line.style.animation = 'none';
+        void line.offsetWidth;
+        line.style.animation = '';
+        document.getElementById('introStatus').textContent = 'Preparando experiencia...';
+        nextButton.classList.remove('visible');
+        clearTimeout(introTimer);
+        introTimer = window.setTimeout(() => {
+          if (currentStep === -1) {
+            introComplete = true;
+            introStage.classList.add('intro-ready');
+            document.getElementById('introStatus').textContent = 'Experiencia preparada · continúa';
+            updateControls();
+          }
+        }, 5000);
+      } else {
+        setActiveStage(advantageStages[nextStep]);
+      }
+      updateControls();
+    }
+
+    nextButton.addEventListener('click', () => {
+      if (currentStep === -1) moveToStep(0);
+      else if (currentStep >= 0 && currentStep < 5) moveToStep(currentStep + 1);
+      else if (currentStep === 5) moveToStep(6);
+    });
+    backButton.addEventListener('click', () => {
+      if (currentStep > 0 && currentStep <= 5) moveToStep(currentStep - 1);
+      else if (currentStep === 0) moveToStep(-1);
+    });
+
+    // La primera flecha aparece únicamente cuando termina la cinemática inicial.
+    nextButton.classList.remove('visible');
+    introTimer = window.setTimeout(() => {
+      if (currentStep === -1) {
+        introComplete = true;
+        introStage.classList.add('intro-ready');
+        document.getElementById('introStatus').textContent = 'Experiencia preparada · continúa';
+        updateControls();
+      }
+    }, 5000);
+
+    async function notifyPurchaseAttempt(planKey, planName, price) {
+      const username = document.getElementById('minecraftName').value.trim();
+      const now = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' });
+      const status = document.getElementById('purchaseStatus');
+      status.textContent = 'Enviando aviso al equipo de Mexcraft 2...';
+      const payload = {
+        name: 'Mexcraft+ · Intento de compra',
+        _subject: 'Mexcraft+ — intento de compra de ' + planName,
+        _url: window.location.href,
+        plan: planName,
+        price: price + ' Mexes al mes',
+        minecraft_username: username || 'No indicado',
+        timestamp: now,
+        message: 'Un visitante ha seleccionado un plan de Mexcraft+. Esta es una solicitud pendiente, no un pago confirmado.',
+        _honey: ''
+      };
+      try {
+        const response = await fetch(NOTIFICATION_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || data.success === false) throw new Error(data.message || 'No se pudo enviar el aviso');
+        status.textContent = 'El aviso del intento se ha enviado al sistema de notificaciones. La compra todavía no está confirmada.';
+      } catch (error) {
+        console.error('No se pudo notificar el intento de compra:', error);
+        status.textContent = 'La solicitud se muestra como pendiente, pero no se ha podido enviar el aviso automático. El equipo debe revisar la configuración del servicio de notificaciones.';
+      }
+    }
+
+    document.querySelectorAll('[data-plan]').forEach(button => {
+      button.addEventListener('click', () => {
+        const key = button.dataset.plan;
+        if (selectedPlan) return;
+        selectedPlan = key;
+        const planName = key === 'basic' ? 'Mexcraft+ Basic' : 'Mexcraft+ Pro';
+        const price = key === 'basic' ? 510 : 750;
+        document.getElementById('purchasePlan').textContent = planName.toUpperCase() + ' · ' + price + ' MEXES / MES';
+        purchaseOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        notifyPurchaseAttempt(key, planName, price);
+      });
+    });
+
+    document.getElementById('returnButton').addEventListener('click', () => {
+      purchaseOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      selectedPlan = null;
+      document.getElementById('purchaseStatus').textContent = 'Registrando el intento de compra...';
+      currentStep = 7;
+      setActiveStage(plansStage);
+      updateControls();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight' && nextButton.classList.contains('visible')) nextButton.click();
+      if (event.key === 'ArrowLeft' && backButton.classList.contains('visible')) backButton.click();
+    });
+  </script>
+</body>
+</html>
