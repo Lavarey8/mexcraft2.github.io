@@ -830,6 +830,9 @@
         </form>
     </div>
 
+    <!-- Música de fondo: el archivo trailersong.mp3 está junto a index.html en GitHub -->
+    <audio id="operation-background-audio" src="./trailersong.mp3" preload="auto" loop></audio>
+
     <!-- Reproductor de Operación 2210 a pantalla completa dentro de la web -->
     <div id="operation-video-overlay" aria-label="Vídeo de Operación 2210">
         <button id="operation-video-close" type="button" onclick="closeOperationVideo()"><i class="fa-solid fa-xmark"></i> Cerrar vídeo</button>
@@ -1007,7 +1010,12 @@
                 <i class="fa-solid fa-newspaper"></i>
                 <h2>Noticias y Actualizaciones</h2>
                 <div class="feature-card">
-                    <i class="fa-solid fa-bullhorn"></i>i>
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h3>Mexcraft 2 update 1.1</h3>
+                    <p>Hemos actualizado nuestra web añadiendo 2 nuevas secciones, la primera es la de Mexcraft+, porque está de vuelta, y la segunda... pronto lo sabreís. También vamos a añadir de vuelta los golpes... pero eso mejor para la 2.0(23/10/2026 a las 15:20:37)</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bullhorn"></i>
                     <h3>Web Update 2.0</h3>
                     <p>Hemos actualizado nuestra web camniando la sección de Creditos (29/09/2026 a las 22:05:50)</p>
                 </div>
@@ -1240,6 +1248,7 @@
         const operationCode = document.getElementById("operation-code");
         const operationVideoOverlay = document.getElementById("operation-video-overlay");
         const operationDrivePlayer = document.getElementById("operation-drive-player");
+        const operationBackgroundAudio = document.getElementById("operation-background-audio");
         const operationError = document.getElementById("operation-error");
         const operationVideoUrl = "https://drive.google.com/file/d/1YrH5H8TORld89kh9fEqBehvpsUqEuE3S/preview";
 
@@ -1279,6 +1288,12 @@
             operationVideoOverlay.classList.remove("active");
             operationDrivePlayer.src = "";
             document.body.classList.remove("operation-playing");
+
+            // Al cerrar el vídeo, inicia la música de fondo. El clic del usuario permite reproducirla.
+            operationBackgroundAudio.currentTime = 0;
+            operationBackgroundAudio.play().catch(error => {
+                console.warn("No se pudo iniciar trailersong.mp3:", error);
+            });
         }
 
         function closeOperationError() {
