@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+		<meta content="#09050d" name="theme-color">
+		<title>Mexcraft Legacy | El servidor continúa</title>
+		<link href="https://fonts.googleapis.com" rel="preconnect">
+		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+		<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&amp;family=Montserrat:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+		<style>
+				:root {
+				  --pink: #ff56c8;
+				  --pink-hot: #ff2da8;
+				  --violet: #9d4dff;
+				  --orange: #ffb15d;
+				  --ink: #08050d;
+				  --panel: rgba(21, 12, 28, .86);
+				  --text: #fff4fd;
+				  --muted: #b9a6bd;
+				  --line: rgba(255, 152, 228, .18);
+				  --radius: 16px;
+				}
+				* { box-sizing: border-box; margin: 0; padding: 0; }
+				html { scroll-behavior: smooth; }
+				body {
+				  min-height: 100vh;
+				  display: flex;
+				  flex-direction: column;
+				  overflow-x: hidden;
+				  color: var(--text);
+				  background:
+					radial-gradient(ellipse at 50% -10%, rgba(117, 34, 130, .2), transparent 48%),
+					linear-gradient(180deg, #09050d, #0d0712 56%, #07050b);
+				  font-family: 'Montserrat', sans-serif;
+				  line-height: 1.65;
+				}
+				body::before {
+				  position: fixed;
+				  inset: 0;
+				  z-index: -1;
+				  content: "";
+				  pointer-events: none;
+				  opacity: .22;
+				  background-image: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 4px, transparent 5px);
+				}
+				a { color: inherit; }
+				.container { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
+				/* CINEMÁTICA ORIGINAL MX1: contorno -> color -> título */
+				#legacy-intro {
+				  position: fixed;
+				  inset: 0;
+				  z-index: 1000000;
+				  display: grid;
+				  place-items: center;
+				  overflow: hidden;
+				  isolation: isolate;
+				  background: #030207;
+				  animation: introExit .85s 7.25s cubic-bezier(.72,0,.25,1) forwards;
+				}
+				#legacy-intro::before {
+				  position: absolute;
+				  inset: -30%;
+				  z-index: -2;
+				  content: "";
+				  opacity: 0;
+				  background:
+					radial-gradient(ellipse at 50% 48%, rgba(255, 41, 173, .3), transparent 20%),
+					radial-gradient(ellipse at 42% 55%, rgba(104, 49, 255, .25), transparent 37%),
+					radial-gradient(ellipse at 60% 75%, rgba(255, 152, 72, .18), transparent 38%);
+				  animation: introAtmosphere 7.8s ease-out forwards;
+				}
+				#legacy-intro::after {
+				  position: absolute;
+				  inset: 0;
+				  z-index: 3;
+				  content: "";
+				  pointer-events: none;
+				  opacity: .34;
+				  background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.035) 6px, transparent 7px);
+				}
+				.legacy-cinematic-stage {
+				  position: relative;
+				  width: min(100vw, 1250px);
+				  min-height: 100svh;
+				  display: grid;
+				  place-items: center;
+				  text-align: center;
+				  perspective: 1000px;
+				}
+				.legacy-letter-row {
+				  width: 100%;
+				  display: flex;
+				  justify-content: center;
+				  align-items: center;
+				  gap: clamp(3px, 2.5vw, 28px);
+				  padding: 0 4vw;
+				  transform: translateY(-1.2vh);
+				}
+				.legacy-letter {
+				  display: inline-block;
+				  position: relative;
+				  color: transparent;
+				  font-family: Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+				  font-size: clamp(7rem, 24vw, 19rem);
+				  font-weight: 900;
+				  line-height: .82;
+				  letter-spacing: -.055em;
+				  -webkit-text-stroke: 2px rgba(255, 140, 241, .98);
+				  text-shadow: 0 0 10px rgba(255, 70, 210, .9), 0 0 35px rgba(174, 48, 255, .5);
+				  opacity: 0;
+				  filter: blur(8px);
+				  clip-path: inset(100% 0 0 0);
+				  animation: letterReveal 1.75s cubic-bezier(.15,.8,.2,1) forwards;
+				}
+				.legacy-letter:nth-child(1) { animation-delay: .45s; }
+				.legacy-letter:nth-child(2) { animation-delay: 1.25s; }
+				.legacy-letter:nth-child(3) { animation-delay: 2.05s; }
+				.legacy-letter.is-one { font-size: clamp(6.5rem, 21vw, 17rem); }
+				.legacy-letter::after { content: none; }
+				.legacy-title-lockup {
+				  position: absolute;
+				  z-index: 2;
+				  top: 50%;
+				  left: 50%;
+				  width: min(94vw, 720px);
+				  padding: 12px;
+				  opacity: 0;
+				  transform: translate(-50%, -42%) scale(.8);
+				  animation: legacyLockupReveal 1.2s 3.85s cubic-bezier(.12,.75,.15,1) forwards;
+				}
+				.legacy-edition-line {
+				  display: block;
+				  margin-bottom: 7px;
+				  color: #ffd4f5;
+				  font-size: clamp(.62rem, 1.4vw, .82rem);
+				  font-weight: 800;
+				  letter-spacing: .48em;
+				  text-transform: uppercase;
+				  text-shadow: 0 0 15px rgba(255, 86, 200, .8);
+				}
+				.legacy-title-lockup h1 {
+				  font-family: Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+				  font-size: clamp(2.8rem, 9vw, 6.8rem);
+				  font-weight: 900;
+				  line-height: .78;
+				  letter-spacing: -.025em;
+				  text-transform: uppercase;
+				  color: #fff;
+				  -webkit-text-stroke: .7px #24102b;
+				  text-shadow: 4px 5px 0 #411044, 0 0 12px rgba(255,255,255,.45), 0 0 32px rgba(255,56,204,.85);
+				}
+				.legacy-title-lockup h1 span { display: block; }
+				.legacy-title-lockup h1 strong {
+				  display: block;
+				  margin-top: 7px;
+				  color: #ff9edc;
+				  font-size: .66em;
+				  letter-spacing: .015em;
+				  text-shadow: 3px 4px 0 #441045, 0 0 25px rgba(255, 83, 206, .75);
+				}
+				.legacy-flare {
+				  position: absolute;
+				  z-index: 1;
+				  left: -20%;
+				  top: 50%;
+				  width: 140%;
+				  height: 3px;
+				  opacity: 0;
+				  transform: rotate(-8deg) scaleX(0);
+				  background: linear-gradient(90deg, transparent, #a65dff, #fff, #ff63c9, transparent);
+				  box-shadow: 0 0 24px 6px rgba(255, 58, 199, .8);
+				  animation: legacyFlare .9s 3.55s ease-out forwards;
+				}
+				.legacy-intro-subtitle {
+				  position: absolute;
+				  top: calc(50% + clamp(125px, 17vw, 190px));
+				  left: 0;
+				  width: 100%;
+				  padding: 0 16px;
+				  color: rgba(255, 235, 252, .65);
+				  font-size: clamp(.58rem, 1.7vw, .8rem);
+				  font-weight: 700;
+				  letter-spacing: .32em;
+				  text-transform: uppercase;
+				  opacity: 0;
+				  animation: subtitleIn .7s 5.25s ease-out forwards;
+				}
+				@keyframes introAtmosphere {
+				  0% { opacity: 0; transform: scale(.72) rotate(-8deg); }
+				  30% { opacity: .5; }
+				  100% { opacity: 1; transform: scale(1.08) rotate(0deg); }
+				}
+				@keyframes letterReveal {
+				  0% { opacity: 0; filter: blur(8px); transform: translateY(70px) scale(.7) rotateX(20deg); clip-path: inset(100% 0 0 0); -webkit-text-stroke-color: #fff; }
+				  28% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1.03) rotateX(0); clip-path: inset(0 0 0 0); -webkit-text-stroke-color: #ffc2fa; }
+				  58% { opacity: 1; filter: drop-shadow(0 0 15px rgba(255,64,216,.7)); -webkit-text-stroke-color: #ff7cda; }
+				  100% { opacity: 1; filter: drop-shadow(0 0 23px rgba(255,68,208,.65)); transform: translateY(0) scale(1); clip-path: inset(0 0 0 0); color: #ff9bdd; -webkit-text-stroke-color: #ffe0fb; background: linear-gradient(145deg, #f9d2ff 2%, #ca5dff 30%, #ff55b9 57%, #ffb15d 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 10px rgba(255, 79, 211, .8), 0 0 35px rgba(184, 58, 255, .55); }
+				}
+				@keyframes legacyLockupReveal {
+				  0% { opacity: 0; transform: translate(-50%, -38%) scale(.72); filter: blur(14px); }
+				  60% { opacity: 1; filter: blur(0); }
+				  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+				}
+				@keyframes legacyFlare {
+				  0% { opacity: 0; transform: rotate(-8deg) scaleX(0); }
+				  40% { opacity: 1; transform: rotate(-8deg) scaleX(1); }
+				  100% { opacity: 0; transform: rotate(-8deg) scaleX(1.1); }
+				}
+				@keyframes subtitleIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(12px); } }
+				@keyframes introExit {
+				  0% { opacity: 1; visibility: visible; transform: scale(1); filter: brightness(1); }
+				  55% { opacity: 1; filter: brightness(1.8); }
+				  100% { opacity: 0; visibility: hidden; transform: scale(1.035); filter: brightness(2); pointer-events: none; }
+				}
+				/* Página MX Legacy: tema diferente, con estructura de portal similar a Mexcraft 2 */
+				.legacy-site { flex: 1; opacity: 0; animation: legacySiteIn 1s 7.55s ease-out forwards; }
+				@keyframes legacySiteIn { to { opacity: 1; } }
+				.legacy-header {
+				  position: relative;
+				  padding: 42px 0 24px;
+				  overflow: hidden;
+				  border-bottom: 1px solid rgba(255, 94, 211, .35);
+				  background:
+					linear-gradient(180deg, rgba(8,4,13,.35), rgba(8,4,13,.97)),
+					radial-gradient(ellipse at 50% -20%, rgba(255,69,201,.36), transparent 58%),
+					linear-gradient(125deg, #190b23, #100716 52%, #28111e);
+				}
+				.legacy-header::after {
+				  content: "MX1";
+				  position: absolute;
+				  right: -15px;
+				  bottom: -95px;
+				  color: rgba(255, 90, 213, .045);
+				  font: 900 clamp(9rem, 25vw, 20rem)/.8 Impact, sans-serif;
+				  letter-spacing: -.06em;
+				  pointer-events: none;
+				}
+				.legacy-brand { position: relative; z-index: 1; text-align: center; margin-bottom: 27px; }
+				.legacy-brand .eyebrow { color: var(--pink); font-size: .72rem; font-weight: 900; letter-spacing: .42em; text-transform: uppercase; }
+				.legacy-brand h1 {
+				  margin: 3px 0 4px;
+				  font: 900 clamp(2.7rem, 7vw, 5.1rem)/.9 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif;
+				  letter-spacing: .015em;
+				  text-transform: uppercase;
+				  background: linear-gradient(95deg, #ffb66f 0%, #ff68cb 38%, #c18aff 69%, #fff0f8 100%);
+				  color: transparent;
+				  background-clip: text;
+				  -webkit-background-clip: text;
+				  filter: drop-shadow(0 0 21px rgba(255, 71, 197, .24));
+				}
+				.legacy-brand p { color: var(--muted); font-size: .94rem; font-weight: 600; }
+				.legacy-nav {
+				  position: relative; z-index: 2;
+				  padding: 9px;
+				  border: 1px solid rgba(255, 115, 220, .17);
+				  border-radius: var(--radius);
+				  background: rgba(16, 8, 22, .8);
+				  backdrop-filter: blur(14px);
+				  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+				}
+				.legacy-nav-list { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; list-style: none; }
+				.legacy-tab, .legacy-link {
+				  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+				  padding: 11px 17px;
+				  border: 1px solid rgba(255, 100, 213, .48);
+				  border-radius: 9px;
+				  color: #d3bfd5;
+				  background: rgba(255, 66, 188, .045);
+				  font: 800 .9rem 'Montserrat', sans-serif;
+				  text-decoration: none;
+				  cursor: pointer;
+				  transition: color .22s ease, background .22s ease, transform .22s ease, box-shadow .22s ease;
+				}
+				.legacy-tab:hover, .legacy-link:hover { transform: translateY(-2px); color: white; background: rgba(255, 78, 204, .16); box-shadow: 0 0 17px rgba(255,75,202,.13); }
+				.legacy-tab.active { color: #1a0717; border-color: #ffd4f2; background: linear-gradient(110deg, #ff70d1, #ffb16a); box-shadow: 0 0 20px rgba(255,71,196,.28); }
+				.legacy-link { border-color: rgba(255,177,93,.56); }
+				main { flex: 1; width: min(1180px, calc(100% - 36px)); margin: 34px auto 52px; }
+				.legacy-section { display: none; animation: sectionIn .45s ease both; }
+				.legacy-section.active { display: block; }
+				@keyframes sectionIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+				.legacy-hero {
+				  position: relative;
+				  overflow: hidden;
+				  padding: clamp(28px, 6vw, 70px) clamp(22px, 5vw, 58px);
+				  border: 1px solid rgba(255, 101, 216, .28);
+				  border-radius: 22px;
+				  background:
+					radial-gradient(ellipse at 80% 0%, rgba(255, 72, 191, .17), transparent 35%),
+					linear-gradient(135deg, rgba(33, 13, 41, .96), rgba(12, 7, 17, .97));
+				  box-shadow: 0 25px 65px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.035);
+				}
+				.legacy-hero::before {
+				  content: "M X 1";
+				  position: absolute; right: -10px; bottom: -55px;
+				  color: rgba(255, 95, 215, .055);
+				  font: 900 clamp(7rem, 21vw, 17rem)/.8 Impact, sans-serif;
+				  letter-spacing: -.05em; pointer-events: none;
+				}
+				.legacy-hero > * { position: relative; z-index: 1; }
+				.legacy-pill { display: inline-flex; align-items: center; gap: 9px; padding: 7px 12px; border: 1px solid rgba(255,120,219,.35); border-radius: 999px; color: #ffc4f0; background: rgba(255,70,195,.07); font-size: .72rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+				.legacy-hero h2 { max-width: 850px; margin: 20px 0 16px; font: 900 clamp(2.7rem, 7.6vw, 6.3rem)/.9 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: -.012em; }
+				.legacy-hero h2 span { display: block; color: var(--pink); text-shadow: 0 0 28px rgba(255,67,198,.32); }
+				.legacy-hero p { max-width: 690px; color: #cfbdd4; font-size: 1rem; }
+				.legacy-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+				.legacy-cta { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 13px 20px; border-radius: 10px; border: 1px solid #ff93dc; color: #180716; background: linear-gradient(110deg, #ff6acb, #ffc078); font-weight: 900; text-decoration: none; box-shadow: 0 0 20px rgba(255,69,195,.2); transition: transform .2s ease, box-shadow .2s ease; }
+				.legacy-cta:hover { transform: translateY(-3px); box-shadow: 0 0 29px rgba(255,69,195,.35); }
+				.legacy-cta.secondary { color: #ffeafa; background: rgba(255,255,255,.045); border-color: rgba(255,255,255,.22); box-shadow: none; }
+				.legacy-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 0 0 22px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+				.legacy-heading p { color: var(--pink); font-size: .72rem; font-weight: 900; letter-spacing: .3em; text-transform: uppercase; }
+				.legacy-heading h2 { font: 900 clamp(2.2rem, 5vw, 4rem)/.95 Impact, Haettenschweiler, 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+				.legacy-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+				.legacy-card { min-width: 0; padding: 24px; border: 1px solid rgba(255, 99, 214, .16); border-radius: 15px; background: linear-gradient(145deg, rgba(29,14,35,.92), rgba(15,9,20,.94)); box-shadow: 0 12px 30px rgba(0,0,0,.13); transition: transform .24s ease, border-color .24s ease; }
+				.legacy-card:hover { transform: translateY(-5px); border-color: rgba(255,103,215,.48); }
+				.legacy-card i { display: inline-flex; align-items: center; justify-content: center; width: 47px; height: 47px; margin-bottom: 16px; border: 1px solid rgba(255,117,216,.27); border-radius: 13px; color: var(--pink); background: rgba(255,80,200,.08); font-size: 1.25rem; }
+				.legacy-card h3 { margin-bottom: 8px; font-size: 1.04rem; }
+				.legacy-card p { color: var(--muted); font-size: .92rem; }
+				.legacy-notice { margin-top: 20px; padding: 17px 20px; border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; color: #e7d5e9; background: rgba(255,177,93,.06); }
+				.legacy-placeholder { min-height: 240px; display: grid; place-items: center; padding: 28px; border: 1px dashed rgba(255,120,219,.28); border-radius: 18px; text-align: center; background: rgba(255,255,255,.018); }
+				.legacy-placeholder i { color: var(--pink); font-size: 3.2rem; margin-bottom: 12px; text-shadow: 0 0 20px rgba(255,70,202,.42); }
+				.legacy-placeholder h3 { margin-bottom: 5px; font: 900 2rem/1 Impact, 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+				.legacy-placeholder p { max-width: 580px; color: var(--muted); }
+				footer { margin-top: auto; padding: 24px 0; color: #8c748f; text-align: center; font-size: .82rem; border-top: 1px solid rgba(255, 103, 212, .15); background: rgba(10,5,13,.7); }
+				@media (max-width: 760px) {
+				  .legacy-header { padding-top: 30px; }
+				  .legacy-grid { grid-template-columns: 1fr; }
+				  .legacy-tab, .legacy-link { padding: 10px 12px; font-size: .82rem; }
+				  .legacy-hero { border-radius: 16px; }
+				  .legacy-title-lockup h1 { line-height: .86; }
+				  .legacy-intro-subtitle { letter-spacing: .16em; }
+				}
+				@media (prefers-reduced-motion: reduce) {
+				  #legacy-intro { animation-delay: 0s; animation-duration: .01ms; }
+				  #legacy-intro::before, .legacy-letter, .legacy-title-lockup, .legacy-flare, .legacy-intro-subtitle { animation-duration: .01ms !important; animation-delay: 0s !important; }
+				  .legacy-site { animation-delay: 0s; animation-duration: .01ms; opacity: 1; }
+				  *, *::before, *::after { scroll-behavior: auto !important; }
+				}
+			/* Integración del contenido original de Mexcraft 2 con el tema MX Legacy */
+			body > header, body > main, body > footer { opacity:0; animation:legacySiteIn 1s 7.55s ease-out forwards; }
+			@keyframes legacySiteIn { to { opacity:1; } }
+			.tab-content { display:none; animation:sectionIn .45s ease both; }
+			.tab-content.active { display:block; }
+			.nav-tabs { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; list-style:none; }
+			.tab-btn { touch-action:manipulation; -webkit-tap-highlight-color:transparent; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 14px; border:1px solid rgba(255,100,213,.48); border-radius:9px; color:#d3bfd5; background:rgba(255,66,188,.045); font:800 .82rem 'Montserrat',sans-serif; text-decoration:none; cursor:pointer; transition:.22s; }
+			.tab-btn:hover { transform:translateY(-2px); color:white; background:rgba(255,78,204,.16); }
+			.tab-btn.active { color:#1a0717; border-color:#ffd4f2; background:linear-gradient(110deg,#ff70d1,#ffb16a); }
+			.tab-btn-danger { border-color:rgba(255,100,120,.65); }
+			.brand { text-align:center; margin:0 0 24px; }
+			.brand h1 { margin:3px 0 4px; font:900 clamp(2.7rem,7vw,5.1rem)/.9 Impact,Haettenschweiler,'Barlow Condensed',sans-serif; text-transform:uppercase; background:linear-gradient(95deg,#ffb66f 0%,#ff68cb 38%,#c18aff 69%,#fff0f8 100%); color:transparent; background-clip:text; -webkit-background-clip:text; }
+			.brand p { color:var(--muted); font-weight:600; }
+			.connect-box,.empty-section,.feature-card,.mexplus-panel { margin:16px 0; padding:24px; border:1px solid rgba(255,99,214,.2); border-radius:15px; background:linear-gradient(145deg,rgba(29,14,35,.92),rgba(15,9,20,.94)); box-shadow:0 12px 30px rgba(0,0,0,.13); }
+			.connect-box h2,.empty-section h2 { font:900 clamp(2rem,5vw,3.5rem)/1 Impact,'Barlow Condensed',sans-serif; margin-bottom:12px; }
+			.connect-box p,.empty-section p,.feature-card p,.mexplus-panel p { color:var(--muted); }
+			.features-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:18px; }
+			.feature-card h3,.mexplus-panel h3 { margin:6px 0 8px; }
+			.feature-card i,.empty-section>i { color:var(--pink); font-size:1.5rem; margin-bottom:12px; }
+			.empty-section { text-align:left; }
+			.empty-section>.feature-card { margin-top:16px; }
+			#operation-modal,#operation-error { position:fixed; inset:0; z-index:100000; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.88); backdrop-filter:blur(12px); }
+			#operation-modal.active,#operation-error.active { display:grid; }
+			.operation-card { width:min(100%,460px); padding:30px; border:1px solid rgba(255,100,213,.4); border-radius:18px; background:#150c1c; box-shadow:0 0 50px rgba(255,50,190,.2); }
+			.operation-card h2 { margin:10px 0; font:900 2.4rem Impact,sans-serif; }
+			.operation-card p { color:var(--muted); margin-bottom:18px; }
+			.operation-card input { width:100%; padding:13px; margin-bottom:16px; border:1px solid var(--line); border-radius:8px; background:#09050d; color:white; }
+			.operation-actions { display:flex; gap:10px; }
+			.operation-actions button,#operation-error button,#operation-video-close { padding:11px 16px; border:1px solid #ff93dc; border-radius:9px; background:linear-gradient(110deg,#ff6acb,#ffc078); color:#180716; font-weight:900; cursor:pointer; }
+			.operation-icon { color:var(--pink); font-size:2rem; }
+			#operation-video-overlay,#credits-video-overlay { position:fixed; inset:0; z-index:99999; display:none; background:#000; }
+			#operation-video-overlay.active,#credits-video-overlay.active { display:block; }
+			#operation-video-overlay iframe,#credits-video-overlay iframe { width:100%; height:100%; border:0; }
+			#operation-video-close { position:absolute; top:16px; right:16px; z-index:2; }
+			.error-content { text-align:center; max-width:600px; padding:30px; }
+			.error-content i { color:#ff6b86; font-size:3rem; }
+			.error-content h2 { margin:15px 0; }
+			#mexplus-intro { display:none; }
+			#mexplus-intro.active { display:grid; position:fixed; inset:0; z-index:100001; place-items:center; overflow:hidden; padding:24px; color:#fff; background:radial-gradient(ellipse at 50% 48%,rgba(171,43,175,.28),transparent 34%),radial-gradient(ellipse at 50% 100%,rgba(255,76,188,.14),transparent 48%),#08050d; isolation:isolate; }
+			#mexplus-intro.active::before, #mexplus-intro.active::after { content:""; position:absolute; inset:-35%; pointer-events:none; border:1px solid rgba(255,113,216,.12); border-radius:50%; animation:mexplusPulse 4s ease-out infinite; }
+			#mexplus-intro.active::after { animation-delay:1.2s; }
+			#mexplus-intro.leaving { opacity:0; visibility:hidden; transition:opacity .7s ease,visibility .7s; }
+			.mexplus-intro-core { position:relative; z-index:1; width:min(720px,100%); text-align:center; animation:mexplusCoreIn .85s cubic-bezier(.16,.8,.25,1) both; }
+			.mexplus-orbit { width:84px; height:84px; display:grid; place-items:center; margin:0 auto 24px; border:1px solid rgba(255,151,225,.75); border-radius:50%; color:#fff; font-size:2.1rem; background:rgba(255,65,194,.12); box-shadow:0 0 22px rgba(255,60,199,.35),inset 0 0 20px rgba(255,60,199,.16); animation:mexplusOrbit 2.6s ease-in-out infinite; }
+			.mexplus-kicker { color:#ffc2ed; font-size:.72rem; font-weight:900; letter-spacing:.42em; text-transform:uppercase; animation:mexplusTextIn .65s .25s both; }
+			.mexplus-intro-title { margin:12px 0 10px; font:900 clamp(4rem,15vw,9rem)/.86 Impact,Haettenschweiler,'Barlow Condensed',sans-serif; letter-spacing:-.035em; color:#fff; text-shadow:0 0 16px rgba(255,74,204,.7),0 0 44px rgba(157,77,255,.55); animation:mexplusTitleIn 1s .4s cubic-bezier(.12,.8,.2,1) both; }
+			.mexplus-intro-title span { color:#ff8bd9; text-shadow:0 0 24px rgba(255,76,202,.95); }
+			.mexplus-intro-subtitle { color:#d9c1dc; font-size:.86rem; letter-spacing:.12em; animation:mexplusTextIn .7s .8s both; }
+			.mexplus-progress { width:min(300px,75%); height:3px; margin:30px auto 12px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.13); }
+			.mexplus-progress span { display:block; width:100%; height:100%; transform:scaleX(0); transform-origin:left; background:linear-gradient(90deg,#a45cff,#ff5acb,#ffc078); box-shadow:0 0 14px #ff5acb; animation:mexplusProgress 5s linear both; }
+			.mexplus-loading-label { color:#987e9f; font-size:.65rem; font-weight:800; letter-spacing:.22em; text-transform:uppercase; animation:mexplusTextIn .7s 1s both; }
+			.mexplus-content { min-height:300px; }
+			.mexplus-content .feature-card { opacity:0; transform:translateY(18px); }
+			.mexplus-content.mexplus-ready .feature-card { animation:mexplusPageIn .8s .08s cubic-bezier(.16,.8,.25,1) forwards; }
+			.mexplus-grid .mexplus-panel { transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease; }
+			.mexplus-grid .mexplus-panel:hover { transform:translateY(-5px); border-color:rgba(255,111,215,.58); box-shadow:0 16px 35px rgba(255,53,193,.12); }
+			@keyframes mexplusPulse { 0%{transform:scale(.35);opacity:0} 35%{opacity:.55} 100%{transform:scale(1.15);opacity:0} }
+			@keyframes mexplusCoreIn { from{opacity:0;transform:translateY(24px) scale(.96);filter:blur(8px)} to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
+			@keyframes mexplusOrbit { 0%,100%{transform:rotate(0) scale(1);box-shadow:0 0 22px rgba(255,60,199,.35)} 50%{transform:rotate(180deg) scale(1.08);box-shadow:0 0 38px rgba(255,60,199,.7)} }
+			@keyframes mexplusTextIn { from{opacity:0;transform:translateY(12px);letter-spacing:.65em} to{opacity:1;transform:translateY(0);letter-spacing:inherit} }
+			@keyframes mexplusTitleIn { from{opacity:0;transform:translateY(28px) scale(.78);filter:blur(12px)} to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
+			@keyframes mexplusProgress { to{transform:scaleX(1)} }
+			@keyframes mexplusPageIn { to{opacity:1;transform:translateY(0)} }
+			@media (prefers-reduced-motion:reduce) { #mexplus-intro.active::before,#mexplus-intro.active::after,.mexplus-orbit,.mexplus-intro-core,.mexplus-kicker,.mexplus-intro-title,.mexplus-intro-subtitle,.mexplus-progress span,.mexplus-loading-label,.mexplus-content.mexplus-ready .feature-card { animation:none!important;transition:none!important;opacity:1;transform:none;filter:none; } }
+			.mexplus-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+			footer { margin-top:auto; padding:24px 0; color:#8c748f; text-align:center; font-size:.82rem; border-top:1px solid rgba(255,103,212,.15); background:rgba(10,5,13,.7); }
+			@media(max-width:760px){.features-grid,.mexplus-grid{grid-template-columns:1fr}.tab-btn{padding:9px 10px;font-size:.76rem}}
+			/* Transiciones suaves entre pestañas */
+			.tab-content { display:none; opacity:0; transform:translateY(14px); }
+			.tab-content.active { display:block; animation: tabEnter .42s cubic-bezier(.2,.75,.25,1) both; }
+			@keyframes tabEnter { from { opacity:0; transform:translateY(14px); filter:blur(2px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
+			@media (prefers-reduced-motion: reduce) { .tab-content.active { animation:none; opacity:1; transform:none; filter:none; } body > header, body > main, body > footer { animation:none; opacity:1; } }
+			.additional-video-frame { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; border:1px solid rgba(255,103,215,.28); border-radius:14px; background:#050308; margin-top:14px; }
+			.additional-video-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+			.form-embed-wrap { width:100%; min-height:650px; margin-top:18px; overflow:hidden; border:1px solid rgba(255,103,215,.24); border-radius:14px; background:#fff; }
+			.form-embed-wrap iframe { display:block; width:100%; min-height:850px; height: min(1100px, 115vh); border:0; background:#fff; }
+			.form-fallback-link { margin:12px 0 0; color:var(--muted); font-size:.86rem; }
+			.form-fallback-link a { color:#ff9ddd; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
+			@media(max-width:600px){.form-embed-wrap iframe{min-height:900px;height:1050px}.mexplus-orbit{width:68px;height:68px}}
+			/* MX+: el contenido permanece visible incluso si la intro no llega a ejecutarse. */
+			.mexplus-content .feature-card { opacity:1; transform:none; }
+			.mexplus-content.mexplus-ready > .feature-card { animation:mexplusPageIn .8s .08s cubic-bezier(.16,.8,.25,1) both; }
+			.mexplus-grid .mexplus-panel { opacity:1; transform:none; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel { animation:mexplusPageIn .68s cubic-bezier(.16,.8,.25,1) both; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(1) { animation-delay:.10s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(2) { animation-delay:.20s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(3) { animation-delay:.30s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(4) { animation-delay:.40s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(5) { animation-delay:.50s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(6) { animation-delay:.60s; }
+			.mexplus-content.mexplus-ready .mexplus-grid .mexplus-panel:nth-child(7) { animation-delay:.70s; }
+			@media (prefers-reduced-motion:reduce) { .mexplus-content .feature-card,.mexplus-grid .mexplus-panel { opacity:1!important; transform:none!important; animation:none!important; } }
+		
+			/* ===== PESTAÑA GOLPES (acceso por código) ===== */
+			.golpes-gate { max-width:560px; margin:8px auto 26px; padding:30px 24px; text-align:center; border:1px solid rgba(255,99,214,.28); border-radius:18px; background:linear-gradient(145deg, rgba(29,14,35,.92), rgba(15,9,20,.94)); box-shadow:0 18px 45px rgba(0,0,0,.25); }
+			.golpes-gate > i { display:inline-flex; align-items:center; justify-content:center; width:58px; height:58px; margin-bottom:12px; border:1px solid rgba(255,117,216,.3); border-radius:16px; color:var(--pink); background:rgba(255,80,200,.08); font-size:1.5rem; }
+			.golpes-gate h2 { font:900 clamp(2.2rem,8vw,3.2rem)/1 Impact,Haettenschweiler,'Barlow Condensed',sans-serif; text-transform:uppercase; margin-bottom:6px; }
+			.golpes-gate p { color:var(--muted); font-size:.92rem; }
+			.golpes-input-row { display:flex; gap:10px; margin-top:20px; }
+			#golpe-code { flex:1; min-width:0; padding:13px 14px; border:1px solid rgba(255,100,213,.48); border-radius:10px; color:var(--text); background:rgba(255,255,255,.05); font:700 16px 'Montserrat',sans-serif; letter-spacing:.3em; text-align:center; outline:none; -webkit-appearance:none; appearance:none; }
+			#golpe-code:focus { border-color:#ffd4f2; box-shadow:0 0 0 3px rgba(255,86,200,.18); }
+			#golpe-code::placeholder { letter-spacing:.04em; color:#8c748f; font-weight:600; }
+			#golpe-submit { padding:13px 18px; border:1px solid #ff93dc; border-radius:10px; color:#180716; background:linear-gradient(110deg,#ff6acb,#ffc078); font:900 .9rem 'Montserrat',sans-serif; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+			#golpe-msg { min-height:1.5em; margin-top:14px; font-weight:700; }
+			#golpe-msg.ok { color:#9dffc0; }
+			#golpe-msg.error { color:#ff8fa3; }
+			.golpes-gate.shake { animation:golpeShake .4s ease; }
+			@keyframes golpeShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+			.golpes-unlocked { max-width:900px; margin:0 auto 22px; text-align:center; }
+			.golpes-unlocked[hidden] { display:none; }
+			.golpes-unlocked-title { margin-bottom:10px; color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.3em; text-transform:uppercase; }
+			.golpes-chips { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+			.golpe-chip { padding:10px 14px; border:1px solid rgba(255,100,213,.48); border-radius:9px; color:#d3bfd5; background:rgba(255,66,188,.045); font:800 .82rem 'Montserrat',sans-serif; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+			.golpe-chip.active { color:#1a0717; border-color:#ffd4f2; background:linear-gradient(110deg,#ff70d1,#ffb16a); }
+			.golpes-relock { margin-top:12px; padding:7px 12px; border:1px solid rgba(255,255,255,.2); border-radius:999px; color:var(--muted); background:transparent; font:700 .74rem 'Montserrat',sans-serif; cursor:pointer; touch-action:manipulation; }
+			.golpe-section { display:none; }
+			.golpe-section.active { display:block; animation:sectionIn .45s ease both; }
+			.golpe-head { margin:0 0 22px; padding-bottom:16px; border-bottom:1px solid var(--line); }
+			.golpe-head p { color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.3em; text-transform:uppercase; }
+			.golpe-head h2 { font:900 clamp(2rem,6vw,3.6rem)/.95 Impact,Haettenschweiler,'Barlow Condensed',sans-serif; text-transform:uppercase; }
+			.golpe-body { min-height:200px; }
+			.golpe-body:empty { display:grid; place-items:center; padding:28px; border:1px dashed rgba(255,120,219,.28); border-radius:18px; background:rgba(255,255,255,.018); }
+			.golpe-body:empty::before { content:"Sección vacía · lista para rellenar"; color:var(--muted); font-weight:600; text-align:center; }
+			@media (max-width:480px){ .golpes-input-row { flex-direction:column; } }
+		</style>
+	</head>
+	<body>
+		<!--Intro inspirada en el lenguaje visual de una cinemática de letras y título, con identidad original MX1-->
+		<div aria-label="Presentación de Mexcraft Legacy" id="legacy-intro">
+			<div class="legacy-cinematic-stage">
+				<div class="legacy-flare">
+				</div>
+				<div aria-hidden="true" class="legacy-letter-row">
+					<span class="legacy-letter">M</span>
+					<span class="legacy-letter">X</span>
+					<span class="legacy-letter is-one">1</span>
+				</div>
+				<div class="legacy-title-lockup">
+					<span class="legacy-edition-line">The legacy returns</span>
+					<h1><span>Mexcraft</span><strong>Legacy</strong></h1>
+				</div>
+				<p class="legacy-intro-subtitle">El legado continúa</p>
+			</div>
+		</div>
+		<!--INTRO PREMIUM DE MEXCRAFT+ (5 segundos)-->
+		<div aria-hidden="true" id="mexplus-intro">
+			<div class="mexplus-intro-core">
+				<div class="mexplus-orbit">
+					<i class="fa-solid fa-plus"></i>
+				</div>
+				<p class="mexplus-kicker">Una nueva experiencia</p>
+				<h1 class="mexplus-intro-title">MEXCRAFT<span>+</span></h1>
+				<p class="mexplus-intro-subtitle">Preparando acceso exclusivo</p>
+				<div class="mexplus-progress">
+					<span></span>
+				</div>
+				<p class="mexplus-loading-label">Inicializando sistema...</p>
+			</div>
+		</div>
+		<!--REPRODUCTOR DE CRÉDITOS: GOOGLE DRIVE-->
+		<div aria-label="Créditos en reproducción" id="credits-video-overlay">
+			<button type="button" id="credits-close" aria-label="Cerrar créditos" style="position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;z-index:2;padding:10px 14px;border:1px solid #ff93dc;border-radius:999px;background:rgba(18,12,30,.9);color:#fff;font:700 14px system-ui;touch-action:manipulation;">✕ Cerrar</button>
+			<iframe allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" id="credits-drive-player" src="https://drive.google.com/file/d/11D7YrkD-_hTNR7JWnBr8d_DBcABKbVqo/preview"></iframe>
+		</div>
+		<!--OPERACIÓN 2210: acceso mediante código-->
+		<!--Música de fondo: el archivo trailersong.mp3 está junto a index.html en GitHub-->
+		<!--Reproductor de Operación 2210 a pantalla completa dentro de la web-->
+		<!--Animación de error del sistema-->
+		<header class="legacy-header">
+			<div class="container">
+				<div class="brand">
+					<p class="eyebrow">El archivo original · El servidor continúa</p>
+					<h1>Mexcraft Legacy</h1>
+					<p><i class="fa-solid fa-cube"></i> Mexcraft 2 + MX Legacy · Minecraft Bedrock Edition</p>
+				</div>
+				<nav aria-label="Navegación Mexcraft Legacy" class="legacy-nav">
+					<ul class="nav-tabs">
+						<li><button class="tab-btn active" type="button" data-tab="inicio"><i class="fa-solid fa-house"></i> Inicio</button></li>
+						<li><button class="tab-btn" type="button" data-tab="tienda"><i class="fa-solid fa-cart-shopping"></i> Tienda</button></li>
+						<li><button class="tab-btn" type="button" data-tab="reglas"><i class="fa-solid fa-book"></i> Reglas</button></li>
+						<li><button class="tab-btn" type="button" data-tab="noticias"><i class="fa-solid fa-newspaper"></i> Noticias</button></li>
+						<li><button class="tab-btn" type="button" data-tab="misiones"><i class="fa-solid fa-scroll"></i> Misiones</button></li>
+						<li><button class="tab-btn" type="button" data-tab="whitelist"><i class="fa-solid fa-id-card"></i> Whitelist</button></li>
+						<li><button class="tab-btn tab-btn-danger" type="button" data-tab="apelaciones"><i class="fa-solid fa-gavel"></i> Apelaciones</button></li>
+						<li><button class="tab-btn" type="button" data-tab="faq"><i class="fa-solid fa-circle-question"></i> FAQ</button></li>
+						<li><button class="tab-btn" type="button" data-tab="contacto"><i class="fa-solid fa-envelope"></i> Contacto</button></li>
+						<li><button class="tab-btn" type="button" data-tab="contenido"><i class="fa-solid fa-box-open"></i> Contenido Adicional</button></li>
+						<li><button class="tab-btn" type="button" data-tab="creditos"><i class="fa-solid fa-users"></i> Créditos</button></li>
+						<li><button class="tab-btn" type="button" data-tab="mapa"><i class="fa-solid fa-map"></i> Mapa</button></li>
+						<li><button class="tab-btn mexplus-nav-btn" type="button" data-tab="mexcraft-plus"><i class="fa-solid fa-plus"></i> Mexcraft+</button></li>
+						<li><button class="tab-btn" type="button" data-tab="legacy-home"><i class="fa-solid fa-star"></i> Legacy: Inicio</button></li>
+						<li><button class="tab-btn" type="button" data-tab="legacy-history"><i class="fa-solid fa-clock-rotate-left"></i> Historia</button></li>
+						<li><button class="tab-btn" type="button" data-tab="legacy-archive"><i class="fa-solid fa-box-archive"></i> Archivo</button></li>
+						<li><button class="tab-btn" type="button" data-tab="legacy-map"><i class="fa-solid fa-map"></i> Mapa Legacy</button></li>
+						<li><button class="tab-btn" type="button" data-tab="golpes"><i class="fa-solid fa-user-secret"></i> Golpes</button></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<main class="container">
+			<!--1. INICIO-->
+			<div class="tab-content active" id="inicio">
+				<div class="connect-box">
+					<div class="connect-info">
+						<h2>¡Ya estamos en funcionamiento!</h2>
+						<p>¡Conéctate ahora mismo (usando el horario) y únete a nuestra comunidad!</p>
+					</div>
+				</div>
+				<div class="features-grid">
+					<div class="feature-card">
+						<i class="fa-solid fa-bolt"></i>
+						<h3>Servidor Bedrock para todo el mundo</h3>
+						<p>Conéctate desde tu PS4, PS5, PS5 Slim, PS5 Pro, PC con Windows 10 o PC con Windows 11.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-users"></i>
+						<h3>Comunidad</h3>
+						<p>Únete a nuestra comunidad para jugar todos en un espacio seguro y moderado con castigos a los jugadores que no cumplan las reglas.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-shield-halved"></i>
+						<h3>Protección Total</h3>
+						<p>Moderación activa durante el tiempo de juego del servidor.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-cogs"></i>
+						<h3>Actualizaciones Constantes</h3>
+						<p>El servidor se actualizará constantemente para mejorar la experiencia de juego y añadir nuevas características.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-cart-shopping"></i>
+						<h3>Tienda</h3>
+						<p>Usamos nuestra propia economía para comprar cualquier item en cualquier momento... ¡Incluso sin ir a la tienda! (usando el chat)</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-scroll"></i>
+						<h3>Regiones</h3>
+						<p>Hay 2 regiones disponibles: Mexfurg y Tenka (con futuras actualizaciones se añadirán más regiones) y para pasar de una región a otra debes pasar por una aduana (si hay algún documento falsificado a propósito se aplicará la salvaguarda).</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-rocket"></i>
+						<h3>Eventos</h3>
+						<p>Se realizarán eventos de vez en cuando, y si hay un evento se pondrá en la sección de misiones.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-envelope"></i>
+						<h3>Contacto</h3>
+						<p>Si tienes alguna duda o sugerencia, puedes contactarnos a través del correo: h5tsfwngdh@privaterelay.appleid.com (si quieres apelar alguna sanción, ve a la sección de apelaciones).</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-circle-question"></i>
+						<h3>FAQ</h3>
+						<p>Si tienes alguna pregunta frecuente, puedes consultar la sección de FAQ para obtener respuestas rápidas.</p>
+					</div>
+				</div>
+			</div>
+			<!--2. TIENDA-->
+			<div class="tab-content" id="tienda">
+				<div class="empty-section">
+					<i class="fa-solid fa-cart-shopping"></i>
+					<h2>Tienda Oficial</h2>
+					<p>Te presentamos los artículos disponibles en nuestra tienda oficial.</p>
+					<div style="margin-top: 25px;">
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Test.</h3>
+							<p>Test, replace this text! :).</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Piso en el Chester Building.</h3>
+							<p>Un piso pequeño pero agradable, 2100M. (2 Restantes)</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Superpiso en el Chester Building, 4500M.</h3>
+							<p>Un superpiso espacioso y lujoso, 4500M. (1 Restante)</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>El TDWB (The Different wood building).</h3>
+							<p>Unos pisos que cada piso su suelo es de un tipo de madera distinto, (18 restantes), 1000M.</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Superpiso en TDWB.</h3>
+							<p>Un superpiso espacioso y lujoso, 4500M. (1 Restante)</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Rentail place.</h3>
+							<p>Un lugar de alquiler disponible, 500M SEMANALES.</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Rentail garage.</h3>
+							<p>Otro lugar de alquiler disponible, 300M SEMANALES.</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Las WTT (World Trade Towers) (Torre 1).</h3>
+							<p>Altas torres de cristal con unas vistas increibles al puente central, a The Origin y a Calle Mojang, pisos PREMIUM: Pisos 5879M (3 Restantes) y las oficinas PREMIUM: 4768M (3 Restantes).</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-building"></i>
+							<h3>Las WTT (World Trade Towers) (Torre 2).</h3>
+							<p>Una gran torre de marmol muy bonita para negocios (+10 restantes) 4987M.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--3. REGLAS-->
+			<div class="tab-content" id="reglas">
+				<div class="empty-section">
+					<i class="fa-solid fa-book"></i>
+					<h2>Reglas del Servidor</h2>
+					<div class="feature-card">
+						<p><strong>Respeto:</strong> No insultos, racismo, odio ni acoso. Trato civilizado entre jugadores y staff.</p>
+						<p><strong>No hacer grief ni robar:</strong> No destruir ni tomar objetos/construcciones ajenas sin permiso.</p>
+						<p><strong>Fair Play:</strong> Prohibido el uso de trampas, hacks o clientes modificados que den ventaja.</p>
+						<p><strong>No exploits:</strong> Reporta fallos, no los aproveches para beneficio propio.</p>
+						<p><strong>No spam ni publicidad:</strong> Evita mensajes repetitivos y promoción de otros servidores sin permiso.</p>
+						<p><strong>Sin suplantación:</strong> No hacerte pasar por otro jugador o miembro del staff.</p>
+						<p><strong>Sigue las indicaciones del staff:</strong> Sus decisiones son obligatorias en el servidor.</p>
+						<p><strong>Canales adecuados:</strong> Usa chat general para lo general y los canales específicos para temas concretos.</p>
+						<p><strong>Edad y seguridad:</strong> No compartas datos personales sensibles; cumple con la normativa para menores si aplica.</p>
+						<p><strong>Consecuencias:</strong> Las sanciones pueden ir desde advertencias, kick, ban temporal o permanente según la falta.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-gavel"></i>
+						<h3>Aplicación de Reglas</h3>
+						<p>El staff del servidor se reserva el derecho de aplicar las reglas según su criterio y la gravedad de la infracción.</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-exclamation-triangle"></i>
+						<h3>Reportar Infracciones</h3>
+						<p>Si ves una infracción, por favor reporta con pruebas (capturas, registros) al staff.</p>
+					</div>
+				</div>
+			</div>
+			<!--4. NOTICIAS-->
+			<div class="tab-content" id="noticias">
+				<div class="empty-section">
+					<i class="fa-solid fa-newspaper"></i>
+					<h2>Noticias y Actualizaciones</h2>
+					<div class="feature-card">
+						<i class="fa-solid fa-bullhorn"></i>
+						<h3>Mexcraft 2 update 1.1</h3>
+						<p>Hemos actualizado nuestra web añadiendo 2 nuevas secciones, la primera es la de Mexcraft+, porque está de vuelta, y la segunda... pronto lo sabreís. También vamos a añadir de vuelta los golpes... pero eso mejor para la 2.0 (23/10/2026 a las 15:20:37)</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-bullhorn"></i>
+						<h3>Web Update 2.0</h3>
+						<p>Hemos actualizado nuestra web camniando la sección de Creditos (29/09/2026 a las 22:05:50)</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-bullhorn"></i>
+						<h3>Lanzamiento del servidor</h3>
+						<p>¡Ya estamos abiertos para todos! puedes conectarte ahora mismo y disfrutar de la experiencia (21/06/2026 a las 15:30)</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-bullhorn"></i>
+						<h3>Lanzamiento de la web</h3>
+						<p>¡La nueva web del servidor Mexcraft 2 ya está disponible! ¡No te pierdas las últimas novedades que se publicarán aquí! (19/06/2026 a las 23:16)</p>
+					</div>
+					<div class="feature-card">
+						<i class="fa-solid fa-bullhorn"></i>
+						<h3>¡Servidor en Preparación!</h3>
+						<p>V0.1 - Estamos haciendo los últimos preparativos para abrir el servidor por primera vez... ¡No te olvides de marcar el 21/09/2026 en el calendario! (19/09/2026 a las 16:09)</p>
+					</div>
+				</div>
+			</div>
+			<!--5. MISIONES-->
+			<div class="tab-content" id="misiones">
+				<div class="empty-section">
+					<i class="fa-solid fa-scroll"></i>
+					<h2>Misiones</h2>
+					<div style="margin-top:20px;">
+						<div class="feature-card">
+							<i class="fa-solid fa-flag"></i>
+							<h3>Misión por el inicio</h3>
+							<p>¡Bienvenido al servidor! Para completar esta misión, conéctate al servidor (hasta el 29/06/2026 a las 23:59) y recibe 5000 Mexes y una casa azul.</p>
+							<p>Jugadres que la han completado: Clinisbut1</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-flag"></i>
+							<h3>Misión de Exploración</h3>
+							<p>Explora las regiones del servidor y descubre más del mapa. Completa la misión para obtener 2000 Mexes.</p>
+							<p>Jugadres que la han completado: Clinisbut1</p>
+						</div>
+						<div class="feature-card">
+							<i class="fa-solid fa-flag"></i>
+							<h3>Misión de Construcción</h3>
+							<p>Construye una estructura (con licencia activa) y recibe tu recompensa: 2000 Mexes.</p>
+							<p>Jugadres que la han completado: Clinisbut1</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--6. WHITELIST-->
+			<div class="tab-content" id="whitelist">
+				<div class="empty-section">
+					<i class="fa-solid fa-id-card"></i>
+					<h2>Registro de Whitelist</h2>
+					<p>Aquí puedes solicitar o verificar tu acceso a la lista blanca (Whitelist) del servidor Mexcraft 2.</p>
+					<div class="info-card-box">
+						<p><strong>Jugadores autorizados:</strong></p>
+						<p>• Clinisbut</p>
+						<p>• Rompetren1</p>
+						<p>• ChestBurguer</p>
+						<p>• AAA</p>
+						<br>
+						<p>¿Deseas solicitarla? escribe a: <strong>h5tsfwngdh@privaterelay.appleid.com</strong></p>
+					</div>
+				</div>
+			</div>
+			<!--7. APELACIONES (ESTILIZADO EN ROJO NEÓN CON GOOGLE FORMS)-->
+			<div class="tab-content" id="apelaciones">
+				<div class="empty-section danger-section" style="padding: 40px 20px;">
+					<i class="fa-solid fa-gavel appeal-icon"></i>
+					<h2>Apelación de Sanciones</h2>
+					<p class="warning-text"> Si has sido sancionado por incumplimiento de normas, completa este formulario con honestidad para que el Staff evalúe tu caso. </p>
+					<div class="iframe-wrapper-danger form-embed-wrap">
+						<iframe title="Formulario de apelación de sanciones" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://docs.google.com/forms/d/e/1FAIpQLSfieYhePDNcfulfrjBZDK2pGi1j4OWwz7UyWLZTLIt_CZzI_A/viewform?embedded=true">Cargando formulario…</iframe>
+					</div>
+					<p class="form-fallback-link">¿No se muestra el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfieYhePDNcfulfrjBZDK2pGi1j4OWwz7UyWLZTLIt_CZzI_A/viewform" target="_blank" rel="noopener noreferrer">Ábrelo directamente en Google Forms</a>.</p>
+				</div>
+			</div>
+			<!--8. FAQ-->
+			<div class="tab-content" id="faq">
+				<div class="empty-section">
+					<i class="fa-solid fa-circle-question"></i>
+					<h2>Preguntas Frecuentes</h2>
+					<div style="margin-top: 20px;">
+						<div class="feature-card">
+							<p><strong>P:</strong> ¡Minecraft me funciona mal en mi dispositivo!, ¿puedo jugar igualmente?</p>
+							<p><strong>R:</strong> No te preocupes, minecraft bedrock funciona con ciertos errores en PlayStation 4 y PlayStation 5... ¡Pero en PC no hay problemas!</p>
+						</div>
+						<div class="feature-card">
+							<p><strong>P:</strong> Si en el servidor hay problemas de conexión, ¿qué debo hacer?</p>
+							<p><strong>R:</strong> Asegúrate de tener una conexión estable a internet y reinicia el juego. Si el problema persiste, contacta con el staff del servidor.</p>
+						</div>
+						<div class="feature-card">
+							<p><strong>P:</strong> ¿Si reporto a un jugador incumpliendo las normas... Qué sanción hay?</p>
+							<p><strong>R:</strong> Depende: Si es una infracción leve, se aplicará un "warning" y una multa de 500 Mℌ. En cambio, si es una infracción grave, se aplicará la salvaguarda.</p>
+						</div>
+						<div class="feature-card">
+							<p><strong>P:</strong> ¿Qué es la salvaguarda?</p>
+							<p><strong>R:</strong> La salvaguarda es el peor castigo que puede recibir un jugador en el servidor. Consiste en el envenenamiento lento y doloroso de su personaje en una zona diseñada para ello y tras fallecer su personaje, perderá todas sus propiedades, el inventario y su dinero.</p>
+						</div>
+						<div class="feature-card">
+							<p><strong>P:</strong> ¿Si no tengo nada y me condenan a la salvaguarda me libro del castigo?</p>
+							<p><strong>R:</strong> No, porque serás baneado del servidor por una semana.</p>
+						</div>
+						<div class="feature-card">
+							<p><strong>P:</strong> ¿Pasa algo si me condenan a la salvaguarda muchas veces?</p>
+							<p><strong>R:</strong> Suspensión de 1 semana. Aunque puede escalar hasta el baneo permanente.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--9. CONTACTO-->
+			<div class="tab-content" id="contacto">
+				<div class="empty-section">
+					<i class="fa-solid fa-envelope"></i>
+					<h2>Soporte y Contacto</h2>
+					<p style="margin-top: 15px;">Correo de soporte: <strong>h5tsfwngdh@privaterelay.appleid.com</strong></p>
+				</div>
+			</div>
+			<!--10. CONTENIDO ADICIONAL-->
+			<div class="tab-content" id="contenido">
+				<div class="empty-section">
+					<i class="fa-solid fa-box-open"></i>
+					<h2>Contenido Adicional</h2>
+					<div class="feature-card">
+						<h2>Elementos sin usar</h2>
+						<div class="info-card-box">
+							<p>Dos canciones (censuradas) para un trailer:</p>
+							<p>https://drive.google.com/file/d/1EydMnln-d8w8WvltSgYtBQYQ5rzMJyPs/view?usp=sharing</p>
+						</div>
+					</div>
+					<div class="feature-card">
+						<h2>Elementos en desarrollo</h2>
+						<p>Actualmente estamos trabajando en traer los elementos que ofrecía Mexcraft 1 en Mexcraft 2 como los trabajos, golpes...</p>
+					</div>
+					<div class="feature-card">
+						<h2>Elementos en espera</h2>
+						<p>Algunos elementos que estaban en Mexcraft 1 no se han traído a Mexcraft 2 por falta de tiempo o porque no son necesarios.</p>
+					</div>
+					<div class="feature-card">
+						<h2>Mods</h2>
+						<p>Te preguntarás, ¿No había mods en Mexcraft 1?, Respuesta: Sí, había mods en Mexcraft 1, pero no se han traído a Mexcraft 2 porque queremos probar la estabilidad del servidor antes de introducirlos.</p>
+					</div>
+					<div class="feature-card additional-video-card">
+						<h2>Archivo audiovisual · Operación 2210</h2>
+						<p>Registro audiovisual recuperado del archivo de Mexcraft Legacy.</p>
+						<div class="additional-video-frame">
+							<iframe allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://drive.google.com/file/d/1YrH8H5TORld89kh9fEqBehvpsUqEuE3S/preview" title="Vídeo de Operación 2210"></iframe>
+						</div>
+						<p class="form-fallback-link">Si el reproductor no carga, <a href="https://drive.google.com/file/d/1YrH8H5TORld89kh9fEqBehvpsUqEuE3S/view?usp=drive_link" target="_blank" rel="noopener noreferrer">abre el vídeo directamente en Google Drive</a>.</p>
+					</div>
+				</div>
+			</div>
+			<!--11. CRÉDITOS-->
+			<div class="tab-content" id="creditos">
+				<!--Los créditos se reproducen en el reproductor a pantalla completa.-->
+			</div>
+			<!--12. MAPA-->
+			<div class="tab-content" id="mapa">
+				<div class="empty-section">
+					<i class="fa-solid fa-map"></i>
+					<h2>Mapa del Servidor</h2>
+					<p>Sección en construcción</p>
+				</div>
+			</div>
+			<!--MEXCRAFT+: plantilla vacía para rellenar posteriormente-->
+			<div aria-label="Mexcraft+" class="tab-content mexplus-content" id="mexcraft-plus">
+				<div aria-hidden="true" class="mexplus-page-heading">
+					<h2></h2>
+				</div>
+				<div class="feature-card">
+					<h2>Mexcraft+</h2>
+					<p>¡Bienvenido a Mexcraft+! La única suscripción que te hará sentir como un rey.</p>
+					<p>Con Mexcraft+, tienes privilegios como:</p>
+					<div class="mexplus-grid">
+						<div class="mexplus-panel">
+							<h3>Acceso anticipado</h3>
+							<p>Disfruta de actualizaciones antes que nadie.</p>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Recompensas especiales</h3>
+							<p>Lingotes de netherite (x64)</p>
+							<p>Diamantes (x64)</p>
+							<p>Mexes (500)</p>
+							<p>¡Y mucho más!</p>
+							<div class="info-card-box">
+								<p>Estas recompensas se otorgan mensualmente a los miembros de Mexcraft+.</p>
+							</div>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Eventos exclusivos</h3>
+							<p>Participa en eventos solo para miembros de Mexcraft+.</p>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Soporte prioritario</h3>
+							<p>Recibe asistencia más rápida y personalizada.</p>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Propiedades exclusivas</h3>
+							<p>Accede a vivendas especiales que no están disponibles para jugadores regulares.</p>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Personalización avanzada</h3>
+							<p>Obtén opciones de personalización de los nombres de tus objetos y patrones exclusivos de armadura gratis (siguiendo con el estilo que esté disponible ese mes).</p>
+						</div>
+						<div class="mexplus-panel">
+							<h3>Precio</h3>
+							<p>Pulsa el botón de "comprar" para descubrir el precio de Mexcraft+ (el precio se expresa en Mexes, LavareyGames no cobra a nadie).</p>
+						</div>
+					</div>
+					<div class="mexplus-obtener-wrap">
+						<a aria-label="Obtener Mexcraft+" class="mexplus-obtener-btn" href="mx+.html"><span>Obtener</span><i aria-hidden="true" class="fa-solid fa-arrow-right"></i></a>
+					</div>
+					<p class="mexplus-obtener-caption">Descubre los planes y elige tu experiencia Mexcraft+.</p>
+				</div>
+			</div>
+			<!--Secciones añadidas de MX Legacy-->
+			<section class="tab-content" id="legacy-home">
+				<div class="legacy-hero">
+					<span class="legacy-pill"><i class="fa-solid fa-star"></i> MX Legacy</span>
+					<h2>El origen.<span>Reimaginado.</span></h2>
+					<p>Mexcraft 1 Remastered abre su archivo histórico. Un espacio para recuperar contenidos, recuerdos y materiales de la primera etapa de Mexcraft, con una identidad visual completamente renovada.</p>
+					<div class="legacy-hero-actions">
+						<button class="legacy-cta" data-go="legacy-history" type="button">Explorar la historia <i class="fa-solid fa-arrow-right"></i></button>
+						<button class="legacy-cta secondary" data-go="legacy-archive" type="button">Abrir archivo <i class="fa-solid fa-folder-open"></i></button>
+					</div>
+				</div>
+				<div class="legacy-grid" style="margin-top:20px;">
+					<article class="legacy-card">
+						<i class="fa-solid fa-hourglass-start"></i>
+						<h3>Los comienzos</h3>
+						<p>El espacio donde se recopilarán los primeros recuerdos y etapas de Mexcraft 1.</p>
+					</article>
+					<article class="legacy-card">
+						<i class="fa-solid fa-cubes"></i>
+						<h3>El mundo original</h3>
+						<p>Un archivo para reunir construcciones, lugares y contenidos de la edición clásica.</p>
+					</article>
+					<article class="legacy-card">
+						<i class="fa-solid fa-users"></i>
+						<h3>La comunidad</h3>
+						<p>Una sección para conservar los nombres, momentos e historias que quieras añadir.</p>
+					</article>
+				</div>
+			</section>
+			<section class="tab-content" id="legacy-history">
+				<div class="legacy-heading">
+					<div>
+						<p>Capítulo 01</p>
+						<h2>Historia</h2>
+					</div>
+					<span class="legacy-pill">Archivo en construcción</span>
+				</div>
+				<div class="legacy-placeholder">
+					<div>
+						<i class="fa-solid fa-book-open"></i>
+						<h3>El comienzo de todo</h3>
+						<p>Aquí podrás escribir la historia real de Mexcraft 1: cómo empezó, qué etapas tuvo y qué acontecimientos merecen volver a contarse.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tab-content" id="legacy-archive">
+				<div class="legacy-heading">
+					<div>
+						<p>Capítulo 02</p>
+						<h2>Archivo clásico</h2>
+					</div>
+					<span class="legacy-pill">MX1</span>
+				</div>
+				<div class="legacy-grid">
+					<article class="legacy-card">
+						<i class="fa-solid fa-city"></i>
+						<h3>Construcciones</h3>
+						<p>Zona reservada para capturas, descripciones y ubicaciones de construcciones históricas.</p>
+					</article>
+					<article class="legacy-card">
+						<i class="fa-solid fa-scroll"></i>
+						<h3>Modos y actividades</h3>
+						<p>Espacio para recuperar sistemas, actividades y contenidos de Mexcraft 1.</p>
+					</article>
+					<article class="legacy-card">
+						<i class="fa-solid fa-images"></i>
+						<h3>Galería</h3>
+						<p>Añade aquí imágenes y recuerdos de la edición original cuando estén preparados.</p>
+					</article>
+				</div>
+				<div class="legacy-notice">
+					<strong>Nota:</strong>
+					esta sección es una plantilla inicial; el contenido histórico se puede rellenar después.
+				</div>
+			</section>
+			<section class="tab-content" id="legacy-map">
+				<div class="legacy-heading">
+					<div>
+						<p>Capítulo 04</p>
+						<h2>Mapa clásico</h2>
+					</div>
+				</div>
+				<div class="legacy-placeholder">
+					<div>
+						<i class="fa-solid fa-map-location-dot"></i>
+						<h3>Coordenadas no disponibles</h3>
+						<p>Cuando tengas el mapa o las imágenes que quieras publicar, esta sección está lista para recibirlas.</p>
+					</div>
+				</div>
+			</section>
+
+			<!--GOLPES: cada código desbloquea una sección. Los códigos están guardados como hash en el script (ver GOLPES al final).-->
+			<div class="tab-content" id="golpes">
+				<div class="golpes-gate" id="golpes-gate">
+					<i class="fa-solid fa-lock"></i>
+					<h2>Golpes</h2>
+					<p>Introduce un código de golpe para acceder a su sección.</p>
+					<div class="golpes-input-row">
+						<input id="golpe-code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Código de golpe" aria-label="Código de golpe">
+						<button type="button" id="golpe-submit">Desbloquear</button>
+					</div>
+					<p id="golpe-msg" role="status" aria-live="polite"></p>
+				</div>
+				<div class="golpes-unlocked" id="golpes-unlocked" hidden>
+					<p class="golpes-unlocked-title">Golpes desbloqueados</p>
+					<div class="golpes-chips" id="golpes-chips"></div>
+					<button type="button" class="golpes-relock" id="golpes-relock">Volver a bloquear todo</button>
+				</div>
+				<section class="golpe-section" id="golpe-bajo" aria-label="Golpe bajo">
+					<div class="golpe-head">
+						<p>Golpe 01</p>
+						<h2>Golpe bajo</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe bajo --></div>
+				</section>
+				<section class="golpe-section" id="golpe-medio" aria-label="Golpe medio">
+					<div class="golpe-head">
+						<p>Golpe 02</p>
+						<h2>Golpe medio</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe medio --></div>
+				</section>
+				<section class="golpe-section" id="golpe-alto" aria-label="Golpe de alto nivel">
+					<div class="golpe-head">
+						<p>Golpe 03</p>
+						<h2>Golpe de alto nivel</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe de alto nivel --></div>
+				</section>
+				<section class="golpe-section" id="golpe-mencor" aria-label="Golpe a Mencor">
+					<div class="golpe-head">
+						<p>Golpe 04</p>
+						<h2>Golpe a Mencor</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe a Mencor --></div>
+				</section>
+				<section class="golpe-section" id="golpe-hiddn" aria-label="Golpe a los laboratorios Hiddn">
+					<div class="golpe-head">
+						<p>Golpe 05</p>
+						<h2>Golpe a los laboratorios Hiddn</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe a los laboratorios Hiddn --></div>
+				</section>
+				<section class="golpe-section" id="golpe-museo" aria-label="Golpe al First Museum">
+					<div class="golpe-head">
+						<p>Golpe 06</p>
+						<h2>Golpe al First Museum</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe al First Museum --></div>
+				</section>
+				<section class="golpe-section" id="golpe-wtt" aria-label="Golpe a las World Trade Towers">
+					<div class="golpe-head">
+						<p>Golpe 07</p>
+						<h2>Golpe a las World Trade Towers</h2>
+					</div>
+					<div class="golpe-body"><!-- ✏️ Rellena aquí el contenido de: Golpe a las World Trade Towers --></div>
+				</section>
+			</div>
+		</main>
+		<footer>
+			<div class="container">
+				<p>© 2026 Mexcraft · MX Legacy. Servidor de Minecraft Bedrock Edition. Proyecto comunitario sin afiliación con Mojang ni Microsoft.</p>
+			</div>
+		</footer>
+		<!--Reproductor SoundCloud de HOME - Resonance (1 Hour Version), de ThePigGoesQuack.-->
+		<iframe allow="autoplay" frameborder="no" id="soundcloud-player" scrolling="no" src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fliam-roberts-art%2Fhome-resonance-1-hour-version&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=false&amp;show_reposts=false&amp;visual=false&amp;color=%23ff56c8" style="position:fixed;width:1px;height:1px;right:0;bottom:0;opacity:.01;pointer-events:none;border:0;" title="Reproductor de SoundCloud: HOME - Resonance [1 Hour]"></iframe>
+		<button aria-label="Activar música" id="music-toggle" style="position:fixed;right:18px;bottom:18px;z-index:1000;background:rgba(18,12,30,.88);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:11px 15px;font:600 13px system-ui;cursor:pointer;backdrop-filter:blur(8px);" type="button">♫ Activar música</button>
+		<script src="https://w.soundcloud.com/player/api.js">
+		</script>
+		<script>
+			(() => {
+				const intro = document.getElementById("legacy-intro");
+				const frame = document.getElementById("soundcloud-player");
+				const button = document.getElementById("music-toggle");
+				let widget = null;
+				let playing = false;
+				function updateMusicButton(isPlaying) {
+					playing = isPlaying;
+					if (!button) return;
+					button.textContent = playing ? "♫ Pausar música" : "♫ Activar música";
+					button.setAttribute("aria-label", playing ? "Pausar música" : "Activar música");
+				}
+				function initSoundCloud() {
+					if (!window.SC || !window.SC.Widget || !frame) return;
+					widget = window.SC.Widget(frame);
+					widget.bind(window.SC.Widget.Events.PLAY, () => updateMusicButton(true));
+					widget.bind(window.SC.Widget.Events.PAUSE, () => updateMusicButton(false));
+				}
+				if (window.SC && window.SC.Widget) {
+					initSoundCloud();
+				} else if (frame) {
+					frame.addEventListener("load", initSoundCloud, { once: true });
+				}
+				function playMusic() {
+					if (!widget) return;
+					widget.play();
+					updateMusicButton(true);
+				}
+				if (button) {
+					button.addEventListener("click", () => {
+						if (!widget) return;
+						if (playing) {
+							widget.pause();
+							updateMusicButton(false);
+						} else {
+							playMusic();
+						}
+					});
+				}
+				if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+					if (intro) intro.style.display = "none";
+					window.setTimeout(playMusic, 150);
+				} else {
+					window.setTimeout(() => {
+						if (intro) intro.style.pointerEvents = "none";
+						playMusic();
+					}, 8100);
+				}
+			})();
+		</script>
+		<script>
+			const creditsOverlay = document.getElementById("credits-video-overlay");
+			const creditsDrivePlayer = document.getElementById("credits-drive-player");
+			let mexplusIntroTimer = null;
+			let mexplusFinishTimer = null;
+			function openTab(evt, tabName) {
+				if (creditsOverlay && creditsOverlay.classList.contains("active")) return;
+				const selectedButton = evt.target.closest(".tab-btn[data-tab]");
+				const nextTab = document.getElementById(tabName);
+				if (!selectedButton || !nextTab || !nextTab.classList.contains("tab-content")) {
+					console.error("No se ha encontrado la pestaña:", tabName);
+					return;
+				}
+				if (tabName !== "mexcraft-plus") cancelMexcraftPlusIntro();
+				const contents = document.getElementsByClassName("tab-content");
+				for (let i = 0; i < contents.length; i++) {
+					contents[i].classList.remove("active");
+				}
+				const buttons = document.getElementsByClassName("tab-btn");
+				for (let i = 0; i < buttons.length; i++) {
+					buttons[i].classList.remove("active");
+				}
+				nextTab.classList.remove("active");
+				void nextTab.offsetWidth;
+				nextTab.classList.add("active");
+				selectedButton.classList.add("active");
+				if (tabName === "mexcraft-plus") {
+					startMexcraftPlusIntro();
+				} else if (tabName === "creditos") {
+					playCredits();
+				}
+			}
+			window.openTab = openTab;
+			const tabNavigation = document.querySelector(".nav-tabs");
+			if (tabNavigation) {
+				tabNavigation.addEventListener("click", (event) => {
+					const selectedButton = event.target.closest(".tab-btn[data-tab]");
+					if (!selectedButton) return;
+					openTab(event, selectedButton.dataset.tab);
+				});
+			}
+			function cancelMexcraftPlusIntro() {
+				const intro = document.getElementById("mexplus-intro");
+				window.clearTimeout(mexplusIntroTimer);
+				window.clearTimeout(mexplusFinishTimer);
+				if (intro) intro.classList.remove("active", "leaving");
+				document.body.classList.remove("mexplus-playing");
+			}
+			function startMexcraftPlusIntro() {
+				const intro = document.getElementById("mexplus-intro");
+				const section = document.getElementById("mexcraft-plus");
+				if (!intro || !section) return;
+				window.clearTimeout(mexplusIntroTimer);
+				window.clearTimeout(mexplusFinishTimer);
+				section.classList.remove("mexplus-ready");
+				intro.classList.remove("leaving", "active");
+				void intro.offsetWidth;
+				const progress = intro.querySelector(".mexplus-progress span");
+				if (progress) {
+					progress.style.animation = "none";
+					void progress.offsetWidth;
+					progress.style.animation = "";
+				}
+				intro.classList.add("active");
+				document.body.classList.add("mexplus-playing");
+				mexplusIntroTimer = window.setTimeout(() => {
+					intro.classList.add("leaving");
+					section.classList.add("mexplus-ready");
+					mexplusFinishTimer = window.setTimeout(() => {
+						intro.classList.remove("active", "leaving");
+						document.body.classList.remove("mexplus-playing");
+					}, 720);
+				}, 5000);
+			}
+			function playCredits() {
+				if (!creditsOverlay || !creditsDrivePlayer) return;
+				creditsOverlay.classList.add("active");
+				document.body.classList.add("credits-playing");
+				creditsDrivePlayer.src = "https://drive.google.com/file/d/11D7YrkD-_hTNR7JWnBr8d_DBcABKbVqo/preview";
+			}
+			function finishCredits() {
+				if (creditsOverlay) creditsOverlay.classList.remove("active");
+				document.body.classList.remove("credits-playing");
+				const contents = document.getElementsByClassName("tab-content");
+				for (let i = 0; i < contents.length; i++) {
+					contents[i].classList.remove("active");
+				}
+				const buttons = document.getElementsByClassName("tab-btn");
+				for (let i = 0; i < buttons.length; i++) {
+					buttons[i].classList.remove("active");
+				}
+				const homeTab = document.getElementById("inicio");
+				if (homeTab) homeTab.classList.add("active");
+				if (buttons[0]) buttons[0].classList.add("active");
+			}
+			if (creditsOverlay) {
+				creditsOverlay.addEventListener("contextmenu", (event) => event.preventDefault());
+			}
+			const creditsClose = document.getElementById("credits-close");
+			if (creditsClose) {
+				creditsClose.addEventListener("click", () => {
+					finishCredits();
+					if (creditsDrivePlayer) creditsDrivePlayer.src = "about:blank";
+				});
+			}
+		</script>
+
+		<script>
+			/* GOLPES: para añadir uno nuevo, crea su <section class="golpe-section" id="..."> y añade una línea aquí con el hash de su código. */
+			(() => {
+				const cyrb53 = (str, seed = 0) => {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0");
+};
+				const SALT = "mx-golpes-v1:";
+				const STORAGE_KEY = "mexcraft_golpes_desbloqueados";
+				const GOLPES = [
+				{ id: "golpe-bajo", title: "Golpe bajo", hash: "08a4ebee06217b11" },
+				{ id: "golpe-medio", title: "Golpe medio", hash: "f279a0f8f4dc37ae" },
+				{ id: "golpe-alto", title: "Golpe de alto nivel", hash: "0a0075c9ee371113" },
+				{ id: "golpe-mencor", title: "Golpe a Mencor", hash: "2cc69851df00ce4a" },
+				{ id: "golpe-hiddn", title: "Golpe a los laboratorios Hiddn", hash: "099e41987aa00131" },
+				{ id: "golpe-museo", title: "Golpe al First Museum", hash: "47fe1fea3544dfff" },
+				{ id: "golpe-wtt", title: "Golpe a las World Trade Towers", hash: "f425b5ac8cb5165a" }
+				];
+				const input = document.getElementById("golpe-code");
+				const submit = document.getElementById("golpe-submit");
+				const msg = document.getElementById("golpe-msg");
+				const gate = document.getElementById("golpes-gate");
+				const unlockedBox = document.getElementById("golpes-unlocked");
+				const chips = document.getElementById("golpes-chips");
+				const relock = document.getElementById("golpes-relock");
+				if (!input || !submit || !chips) return;
+				let unlocked = [];
+				try {
+					const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+					if (Array.isArray(saved)) unlocked = saved.filter((id) => GOLPES.some((g) => g.id === id));
+				} catch (e) { unlocked = []; }
+				function save() {
+					try { localStorage.setItem(STORAGE_KEY, JSON.stringify(unlocked)); } catch (e) {}
+				}
+				function showMsg(text, type) {
+					msg.textContent = text;
+					msg.className = type || "";
+				}
+				function showSection(id) {
+					document.querySelectorAll(".golpe-section").forEach((s) => s.classList.toggle("active", s.id === id));
+					chips.querySelectorAll(".golpe-chip").forEach((c) => c.classList.toggle("active", c.dataset.golpe === id));
+				}
+				function renderChips() {
+					chips.innerHTML = "";
+					GOLPES.filter((g) => unlocked.includes(g.id)).forEach((g) => {
+						const b = document.createElement("button");
+						b.type = "button";
+						b.className = "golpe-chip";
+						b.dataset.golpe = g.id;
+						b.textContent = g.title;
+						chips.appendChild(b);
+					});
+					unlockedBox.hidden = unlocked.length === 0;
+				}
+				chips.addEventListener("click", (e) => {
+					const chip = e.target.closest(".golpe-chip");
+					if (chip) showSection(chip.dataset.golpe);
+				});
+				function tryCode() {
+					const code = input.value.replace(/\D/g, "");
+					if (!code) { showMsg("Introduce un código.", "error"); return; }
+					const h = cyrb53(SALT + code);
+					const golpe = GOLPES.find((g) => g.hash === h);
+					if (!golpe) {
+						showMsg("Código incorrecto.", "error");
+						gate.classList.remove("shake");
+						void gate.offsetWidth;
+						gate.classList.add("shake");
+						input.select();
+						return;
+					}
+					if (!unlocked.includes(golpe.id)) { unlocked.push(golpe.id); save(); }
+					renderChips();
+					showSection(golpe.id);
+					showMsg("Acceso concedido: " + golpe.title, "ok");
+					input.value = "";
+					input.blur();
+					const target = document.getElementById(golpe.id);
+					if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+				}
+				submit.addEventListener("click", tryCode);
+				input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); tryCode(); } });
+				relock.addEventListener("click", () => {
+					unlocked = [];
+					save();
+					renderChips();
+					showSection(null);
+					showMsg("Todos los golpes se han vuelto a bloquear.", "");
+				});
+				renderChips();
+			})();
+		</script>
+	</body>
+</html>
